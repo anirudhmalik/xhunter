@@ -3,14 +3,9 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#000000">
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:src="@drawable/launch_screen1"
-        android:scaleType="centerCrop" />
-        <!-- <pl.droidsonroids.gif.GifImageView
+    <pl.droidsonroids.gif.GifImageView
        android:layout_width="match_parent"
        android:layout_height="match_parent"
-       android:src="@drawable/splash_screen"
-    /> -->
+       android:src="@drawable/splash"
+    />
 </RelativeLayout>

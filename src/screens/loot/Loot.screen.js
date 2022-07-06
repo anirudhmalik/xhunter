@@ -24,7 +24,7 @@ const Loot = ({navigation}) => {
     var path = dirs.SDCardDir +`/XHUNTER/`;
     RNFetchBlob.fs.ls(path).then((data) => {
         if(data.length>0){
-           setCurrentDirData(data)
+           setCurrentDirData(data.filter((d)=>{return d!=="payload"}))
         }
     }); 
   }

