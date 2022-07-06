@@ -23,8 +23,6 @@
   <p align="center">
     Android Penetration Tool [ RAT for Android ] 💀
     <br />
-    <br />
-    <br />
     <a href="https://github.com/anirudhmalik/release">View Release</a>
     ·
     <a href="https://github.com/anirudhmalik/xhunter/issues">Report Bug</a>
@@ -70,16 +68,28 @@ In order to use tool we must :
 
 1. Download the latest version **xhunter_vX.X.apk** from release section: [here](https://github.com/anirudhmalik/xhunter/releases)
 2. Once downloaded, Install/Open the app in your device. If you face Unknown Source error [see](https://www.maketecheasier.com/install-apps-from-unknown-sources-android) 
+<img src="https://user-images.githubusercontent.com/70255938/177602074-e74d2c0a-d737-4e25-834d-a5d9fa2ab6f7.jpeg" width="200" height="300">
 
 3. Once installed, Open app and select **Build Payloads** option and select any desired option to build payload :
   - Build WhatsApp Payload (`use this option/payload to enable whatsapp message feature`)
   - Build + Bind Payload (`use this option/payload to bind xhunter malicious code with legitimate apk`)
+  
+<img src="https://user-images.githubusercontent.com/70255938/177602507-92ff278a-0c5f-4939-9de3-e6c113b02a4d.jpeg" width="200" height="300">  
+<img src="https://user-images.githubusercontent.com/70255938/177602864-5ca60e83-00d1-42e5-bcc3-f68a73e0ba69.jpeg" width="200" height="300">  
 
 4. Send the payload to the victim (`use social engineering or other method`)
+
+<img src="https://user-images.githubusercontent.com/70255938/177604559-28897568-50d4-4f83-9a3a-93841ee74c04.jpeg" width="200" height="300">  
 
 5. Once victim uses the payload you will get a active session of victim device to your device
 
 In order to connect/listen to your victim you must :
+
+
+
+https://user-images.githubusercontent.com/70255938/177603280-d74cdcee-d0ae-4036-8fff-534f6ee883d9.mp4
+
+
 
 6. Select **Start Listening** option to listen for the active connection
 
