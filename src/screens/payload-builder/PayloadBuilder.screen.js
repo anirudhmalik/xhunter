@@ -11,7 +11,7 @@ import {
     Spacer
 } from "native-base";
 import DocumentPicker from 'react-native-document-picker'
-import RNFetchBlob from 'react-native-fetch-blob'
+import RNFetchBlob from 'rn-fetch-blob'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { TouchableOpacity } from "react-native";

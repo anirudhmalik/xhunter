@@ -10,7 +10,7 @@ import {
     FlatList, 
 } from "native-base";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import RNFetchBlob from 'react-native-fetch-blob'
+import RNFetchBlob from 'rn-fetch-blob'
 
 const Loot = ({navigation}) => {
   const [currentDirData, setCurrentDirData]=useState([])

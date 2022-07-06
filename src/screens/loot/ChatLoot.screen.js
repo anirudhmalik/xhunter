@@ -12,7 +12,7 @@ import {
     Pressable,
 } from "native-base";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import RNFetchBlob from 'react-native-fetch-blob'
+import RNFetchBlob from 'rn-fetch-blob'
 import { GiftedChat, Bubble, Day, Time, MessageImage } from 'react-native-gifted-chat';
 
 

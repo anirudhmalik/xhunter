@@ -186,6 +186,9 @@ android {
 
         }
     }
+    lintOptions {
+        checkReleaseBuilds false
+    }
 }
 
 dependencies {
@@ -215,8 +218,6 @@ dependencies {
     implementation 'org.smali:smali:2.5.2'
     implementation 'xpp3:xpp3:1.1.4c'
     implementation 'xmlunit:xmlunit:1.6'
-
-
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {

@@ -14,7 +14,7 @@ import {
 } from "native-base";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import moment from "moment";
-import RNFetchBlob from 'react-native-fetch-blob'
+import RNFetchBlob from 'rn-fetch-blob'
 
 import AppBuilder from '../../native-modules/AppBuilder'
 

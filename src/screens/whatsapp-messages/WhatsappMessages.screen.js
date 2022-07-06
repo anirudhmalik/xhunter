@@ -17,7 +17,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import nodejs from 'nodejs-mobile-react-native';
 import { Modal } from 'react-native';
 import moment from "moment";
-import RNFetchBlob from 'react-native-fetch-blob'
+import RNFetchBlob from 'rn-fetch-blob'
 // redux
 import { useSelector } from '../../redux/store';
 
