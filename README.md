@@ -6,8 +6,8 @@
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
-![](https://img.shields.io/github/last-commit/anirudhmalik/xhunter)
-![](https://img.shields.io/github/repo-size/anirudhmalik/xhunter)
+[![Last Commit][last-commit-shield]][last-commit-url]
+[![Repo Size][repo-size-shield]][repo-size-url]
 
 
 
@@ -15,7 +15,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/anirudhmalik/xhunter">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+    <img src="images/logo.png" alt="Logo" width="300" height="300">
   </a>
 
   <h3 align="center">XHUNTER</h3>
@@ -23,7 +23,6 @@
   <p align="center">
     Android Penetration Tool [ RAT for Android ] 💀
     <br />
-    <a href="https://github.com/anirudhmalik/xhunter"><strong>Explore the docs »</strong></a>
     <br />
     <br />
     <a href="https://github.com/anirudhmalik/release">View Release</a>
@@ -146,3 +145,7 @@ Distributed under the MIT License. See `LICENSE.md` for more information.
 [issues-url]: https://github.com/anirudhmalik/xhunter/issues
 [license-shield]: https://img.shields.io/github/license/anirudhmalik/xhunter.svg?style=for-the-badge
 [license-url]: https://github.com/anirudhmalik/xhunter/blob/master/LICENSE.md
+[last-commit-shield]: https://img.shields.io/github/last-commit/anirudhmalik/xhunter.svg?style=for-the-badge
+[last-commit-url]: https://github.com/anirudhmalik/xhunter/commits/master
+[repo-size-shield]: https://img.shields.io/github/repo-size/anirudhmalik/xhunter.svg?style=for-the-badge
+[repo-size-url]: https://github.com/anirudhmalik/xhunter/releases
