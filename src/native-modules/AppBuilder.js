@@ -64,7 +64,7 @@ module.exports = {
                 .then(data => log( "s",data.message))
                 .catch(err => log( "e",err.message));
           
-        log("s", "[+] Output : /documents/XHUNTER/payload/xhunter_payload.apk")   
+        log("s", "[+] Output : /XHUNTER/payload/xhunter_payload.apk")   
         log("done", "!!!! HAPPY HUNTING !!!!")
     },
     decrypt: async function ( dbpath, keypath, log ) {
@@ -116,7 +116,7 @@ module.exports = {
                         .then(data => log( "s",data.message))
                         .catch(err => log( "e",err.message));
                           
-        log("s", "[+] Output : /documents/XHUNTER/payload/xhunter_payload.apk")   
+        log("s", "[+] Output : /XHUNTER/payload/xhunter_payload.apk")   
         log("done", "!!!! HAPPY HUNTING !!!!")         
                 
     },

