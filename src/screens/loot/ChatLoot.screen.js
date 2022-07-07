@@ -30,7 +30,7 @@ const ChatLoot = ({navigation,route}) => {
 
   const fetchChatList =()=>{
     const dirs = RNFetchBlob.fs.dirs;
-    var path = dirs.SDCardDir +`/XHUNTER/${deviceId}/msgstore.db`;
+    var path = dirs.SDCardDir +`/documents/XHUNTER/${deviceId}/msgstore.db`;
     //var path = dirs.SDCardDir +`/msgstore.db`;
     var messageQuery=`SELECT messages.key_id, messages.key_remote_jid, messages.key_from_me AS isFromMe, messages.status, messages.data AS text, messages.timestamp AS createdAt, messages.media_url, messages.media_mime_type, messages.media_wa_type, messages.media_size, messages.media_name, messages.media_caption, messages.media_duration, messages.thumb_image AS image, messages.remote_resource, messages.raw_data, message_thumbnails.thumbnail, messages_quotes.key_id, messages_links._id FROM messages LEFT JOIN message_thumbnails on messages.key_id = message_thumbnails.key_id LEFT JOIN messages_quotes on messages.quoted_row_id > 0 AND messages.quoted_row_id = messages_quotes._id LEFT JOIN messages_links on messages._id = messages_links.message_row_id WHERE messages.key_remote_jid = '${id}' ORDER BY messages.timestamp asc`
     AppBuilder.readDB(path, messageQuery, (d)=>setChat(d));

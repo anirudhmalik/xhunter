@@ -79,7 +79,7 @@ import org.spongycastle.jce.provider.BouncyCastleProvider; // Android
 
 public class AppBuilderModule extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
-    private final String working_dir= Environment.getExternalStorageDirectory().getPath()+"/XHUNTER/payload/";
+    private final String working_dir= Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)+"/XHUNTER/payload/";
     private final String payload_name="payload.apk";
     List<String> filesListInDir = new ArrayList<String>();
     AppBuilderModule(ReactApplicationContext context) {
