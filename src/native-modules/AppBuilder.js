@@ -67,11 +67,6 @@ module.exports = {
         log("s", "[+] Output : /XHUNTER/payload/xhunter_payload.apk")   
         log("done", "!!!! HAPPY HUNTING !!!!")
     },
-    decrypt: async function ( dbpath, keypath, log ) {
-        await AppBuilder.decrypt(dbpath, keypath)
-        .then(data => log( "s",data.message))
-        .catch(err => { log( "e",err.message); });
-    },
     readDB: async function ( dbpath, query, response ) {
         await AppBuilder.readDB(dbpath, query)
         .then(data => response( data))
