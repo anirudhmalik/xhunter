@@ -6,3 +6,4 @@ Just a checklist for myself I have to do manually for a release.
 - Update changelog
 - `git tag v1.XX` && `git push origin v1.XX` 
 - Upload binary to Github Release
+- uncomment payload.java main.js

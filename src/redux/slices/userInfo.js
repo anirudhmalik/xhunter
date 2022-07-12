@@ -12,7 +12,10 @@ const initialState = {
     isEnd:false,
     totalSMS:0,
   },
-  isLoadingData:true
+  contacts:[],
+  callLogs:[],
+  installedApps:[],
+  isLoadingData:false
 };
 
 const slice = createSlice({
@@ -40,6 +43,15 @@ const slice = createSlice({
     addSMS(state, action) {
       state.sms=state.sms.concat(action.payload);
     },
+    addContacts(state, action) {
+      state.contacts=state.contacts.concat(action.payload);
+    },
+    addCallLogs(state, action) {
+      state.callLogs=state.callLogs.concat(action.payload);
+    },
+    addInstalledApps(state, action) {
+      state.installedApps=state.installedApps.concat(action.payload);
+    },
     addSMSInfo(state, action) {
       state.smsInfo=action.payload;
     },
@@ -48,6 +60,15 @@ const slice = createSlice({
     },
     resetSMS(state) {
       state.sms=[];
+    },
+    resetContacts(state) {
+      state.contacts=[];
+    },
+    resetCallLogs(state) {
+      state.callLogs=[];
+    },
+    resetInstalledApps(state) {
+      state.installedApps=[];
     },
   },
 });
@@ -66,7 +87,13 @@ export const {
   addSMS,
   resetSMS,
   addSMSInfo,
-  setIsLoading
+  addContacts,
+  resetContacts,
+  addCallLogs,
+  resetCallLogs,
+  addInstalledApps,
+  resetInstalledApps,
+  setIsLoading,
   } = slice.actions;
   
 

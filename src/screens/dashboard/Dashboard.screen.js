@@ -16,7 +16,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 
 // redux
 import { useDispatch, useSelector } from '../../redux/store';
-import { addDevice, deleteDevice, addSMS, addSMSInfo, setIsLoading } from '../../redux/slices/userInfo'
+import { addDevice, deleteDevice, addSMS, addSMSInfo, addContacts, addCallLogs, addInstalledApps, setIsLoading } from '../../redux/slices/userInfo'
 
 const Dashboard = ({navigation}) => {
   const dispatch = useDispatch();
@@ -26,6 +26,9 @@ const Dashboard = ({navigation}) => {
   useEffect(()=>{
     nodejs.channel.addListener("deviceJoined", handleAddDevice, this);
     nodejs.channel.addListener("getSMS", onGetSMS, this);
+    nodejs.channel.addListener("getContacts", onGetContacts, this);
+    nodejs.channel.addListener("getCallLog", onGetCallLog, this);
+    nodejs.channel.addListener("getInstalledApps", onGetInstalledApps, this);
     nodejs.channel.addListener("deviceDisconnected", handleRemoveDevice, this);
     nodejs.channel.addListener("error", handleError, this);
   },[])
@@ -67,6 +70,24 @@ const Dashboard = ({navigation}) => {
     dispatch(addSMS(sms));
     dispatch(setIsLoading(false));
    }
+
+   const onGetContacts=(data)=>{
+    let{ contactsList }=JSON.parse(data);
+    dispatch(addContacts(contactsList))
+    dispatch(setIsLoading(false));
+   }
+
+   const onGetCallLog=(data)=>{
+    let{ callsLog }=JSON.parse(data);
+    dispatch(addCallLogs(callsLog))
+    dispatch(setIsLoading(false));
+   }
+   const  onGetInstalledApps =(data)=>{
+    let{ installedApps }=JSON.parse(data);
+    dispatch(addInstalledApps(installedApps))
+    dispatch(setIsLoading(false));
+   }
+
 
 
   return (

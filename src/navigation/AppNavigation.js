@@ -20,6 +20,10 @@ import WhatsappContacts from '../screens/whatsapp-contacts/WhatsappContacts.scre
 import Loot from '../screens/loot/Loot.screen';
 import WhatsappLoot from '../screens/loot/WhatsappLoot.screen';
 import ChatLoot from '../screens/loot/ChatLoot.screen';
+import InstalledApps from '../screens/installed-apps/InstalledApps.screen';
+import Contacts from '../screens/contacts/Contact.screen';
+import CallLogs from '../screens/call-logs/CallLogs.screen';
+import SendSms from '../screens/send-sms/SendSms.screen';
 
 const Stack = createStackNavigator(); 
 
@@ -117,6 +121,22 @@ const AppNavigation = () => {
          <Stack.Screen
              name="chatLoot"
              component={ChatLoot}
+        />
+         <Stack.Screen
+             name="installedApps"
+             component={InstalledApps}
+        />
+        <Stack.Screen
+             name="contacts"
+             component={Contacts}
+        />
+        <Stack.Screen
+             name="callLogs"
+             component={CallLogs}
+        />
+        <Stack.Screen
+             name="sendSms"
+             component={SendSms}
         />
 
    </Stack.Navigator>

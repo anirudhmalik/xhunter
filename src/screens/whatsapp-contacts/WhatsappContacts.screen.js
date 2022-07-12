@@ -6,12 +6,8 @@ import {
     IconButton,
     Icon,
     Text,
-    Progress,
     FlatList, 
-    Spacer,
-    Pressable,
     VStack,
-    Fab
 } from "native-base";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 

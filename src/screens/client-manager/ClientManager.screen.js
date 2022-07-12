@@ -95,5 +95,33 @@ const data = [
         option:'Whatsapp Messages',
         iconColor:'success.500',
         navigate: 'whatsappMessages'
+    },
+    {
+        id:'4',
+        icon:"android",
+        option:'Installed Apps',
+        iconColor:'success.500',
+        navigate: 'installedApps'
+    },
+    {
+        id:'5',
+        icon:"contacts",
+        option:'Contacts',
+        iconColor:'info.500',
+        navigate: 'contacts'
+    },
+    {
+        id:'6',
+        icon:"phone",
+        option:'Call Logs',
+        iconColor:'yellow.500',
+        navigate: 'callLogs'
+    },
+    {
+        id:'7',
+        icon:"send",
+        option:'Send SMS',
+        iconColor:'pink.500',
+        navigate: 'sendSms'
     }
 ]
