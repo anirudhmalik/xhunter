@@ -16,8 +16,6 @@
  */
 package brut.androlib.res;
 
-import android.os.Environment;
-
 import brut.androlib.AndrolibException;
 import brut.androlib.options.BuildOptions;
 import brut.androlib.err.CantFindFrameworkResException;
@@ -67,6 +65,9 @@ final public class AndrolibResources {
         ResPackage pkg;
 
         switch (pkgs.length) {
+            case 0:
+                pkg = null;
+                break;
             case 1:
                 pkg = pkgs[0];
                 break;
@@ -315,7 +316,7 @@ final public class AndrolibResources {
 
         File doNotCompressFile;
         try {
-            doNotCompressFile = File.createTempFile("APKTOOL", null, Environment.getExternalStorageDirectory());
+            doNotCompressFile = File.createTempFile("APKTOOL", null);
             doNotCompressFile.deleteOnExit();
 
             BufferedWriter fileWriter = new BufferedWriter(new FileWriter(doNotCompressFile));
@@ -499,7 +500,6 @@ final public class AndrolibResources {
     private void aapt1Package(File apkFile, File manifest, File resDir, File rawDir, File assetDir, File[] include,
                               List<String> cmd, boolean customAapt)
             throws AndrolibException {
-        LOGGER.warning("unsing aapt1");
         cmd.add("p");
 
         if (buildOptions.verbose) { // output aapt verbose
@@ -603,7 +603,6 @@ final public class AndrolibResources {
             cmd.add(rawDir.getAbsolutePath());
         }
         try {
-            LOGGER.warning("aapt1 executeing...");
             OS.exec(cmd.toArray(new String[0]));
             LOGGER.fine("command ran: ");
             LOGGER.fine(cmd.toString());
@@ -702,6 +701,7 @@ final public class AndrolibResources {
     public Duo<ResFileDecoder, AXmlResourceParser> getResFileDecoder() {
         ResStreamDecoderContainer decoders = new ResStreamDecoderContainer();
         decoders.setDecoder("raw", new ResRawStreamDecoder());
+        //decoders.setDecoder("9patch", new Res9patchStreamDecoder());
 
         AXmlResourceParser axmlParser = new AXmlResourceParser();
         axmlParser.setAttrDecoder(new ResAttrDecoder());

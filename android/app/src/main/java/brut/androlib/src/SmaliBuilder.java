@@ -53,7 +53,6 @@ public class SmaliBuilder {
             }
 
             for (String fileName : mSmaliDir.getDirectory().getFiles(true)) {
-                LOGGER.warning("building file: "+fileName);
                 buildFile(fileName, dexBuilder);
             }
             dexBuilder.writeTo(new FileDataStore( new File(mDexFile.getAbsolutePath())));

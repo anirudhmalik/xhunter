@@ -11,9 +11,11 @@ import android.util.Log;
 import androidx.annotation.RequiresApi;
 
 import com.android.apksigner.ApkSignerTool;
+
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableArray;
@@ -24,6 +26,7 @@ import com.facebook.react.bridge.WritableNativeMap;
 import net.dongliu.apk.parser.ApkFile;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.NotNull;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -39,16 +42,22 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.StringReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 import brut.apktool.Main;
+import brut.directory.Directory;
+import brut.directory.ExtFile;
 
 public class AppBuilderModule extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
@@ -170,14 +179,14 @@ public class AppBuilderModule extends ReactContextBaseJavaModule {
             if(new File(working_dir+"normal_apk/assets").exists()) {
                 FileWriter fw=new FileWriter(working_dir+"normal_apk/assets/ip.txt");
                 while((line=br.readLine()) != null){
-                    fw.write(line.replaceAll("192.168.43.1",ip));
+                    fw.write(line.replaceAll("http://192.168.43.1:8080",ip));
                 }//loop
                 fw.close();
                 promise.resolve(params);
             }else if(new File(working_dir+"normal_apk/assets").mkdirs()) {
                 FileWriter fw=new FileWriter(working_dir+"normal_apk/assets/ip.txt");
                 while((line=br.readLine()) != null){
-                    fw.write(line.replaceAll("192.168.43.1",ip));
+                    fw.write(line.replaceAll("http://192.168.43.1:8080",ip));
                 }//loop
                 fw.close();
                 promise.resolve(params);
@@ -505,6 +514,62 @@ public class AppBuilderModule extends ReactContextBaseJavaModule {
             else populateFilesList(file);
         }
     }
-
-
+    private File getAaptFile() throws IOException {
+        copyAssets(reactContext.getAssets(), "sdk", reactContext.getFilesDir());
+        copyAssets(reactContext.getAssets(), "bin", reactContext.getFilesDir());
+        File[] binFiles = new File(reactContext.getFilesDir(), "bin").listFiles();
+        for (File binFile : binFiles) {
+            binFile.setExecutable(true, true);
+        }
+        String arch = Build.CPU_ABI.substring(0, 3).toLowerCase(Locale.US);
+        String aaptName;
+        boolean usePie = Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN;
+        switch (arch) {
+            case "x86":
+                if (usePie) {
+                    aaptName = "aapt-x86-pie";
+                } else {
+                    aaptName = "aapt-x86";
+                }
+                break;
+            case "arm":
+            default:
+                // Default to ARM, just in case
+                if (usePie) {
+                    aaptName = "aapt-arm-pie";
+                } else {
+                    aaptName = "aapt-arm";
+                }
+                break;
+        }
+        return new File(reactContext.getFilesDir(), "bin/"+aaptName);
+    }
+    public static void copyAssets(AssetManager assets, String assetPath, File destFolder) throws IOException {
+        String[] childs = assets.list(assetPath);
+        if (childs.length == 0) {
+            copyFile(assets, assetPath, destFolder);
+        } else {
+            copyFolder(assets, assetPath, destFolder);
+        }
+    }
+    private static void copyFolder(AssetManager assets, String assetPath, File destFolder) throws IOException {
+        Log.d("XHUNTER", "copyFolder() called with: assets = [" + assets + "], assetPath = [" + assetPath + "], destFolder = [" + destFolder + "]");
+        String[] names = assets.list(assetPath);
+        for (String name : names) {
+            copyAssets(assets, assetPath + "/" + name, destFolder);
+        }
+    }
+    private static void copyFile(AssetManager assets, String assetPath, File destFolder) throws IOException {
+        Log.d("XHUNTER", "copyFile() called with: assets = [" + assets + "], assetPath = [" + assetPath + "], destFolder = [" + destFolder + "]");
+        File outFile = new File(destFolder, assetPath);
+        outFile.getParentFile().mkdirs();
+        InputStream input = assets.open(assetPath);
+        OutputStream output = new FileOutputStream(outFile);
+        IOUtils.copy(input, output);
+        input.close();
+        output.close();
+    }
+    public static File getClasspathFile(ReactContext context) {
+        return new File(context.getFilesDir(),"sdk/platforms/android-27/android.jar");
+    }
 }

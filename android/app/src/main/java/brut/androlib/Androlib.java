@@ -22,6 +22,7 @@ import brut.androlib.meta.MetaInfo;
 import brut.androlib.meta.UsesFramework;
 import brut.androlib.options.BuildOptions;
 import brut.androlib.res.AndrolibResources;
+import brut.androlib.res.data.ResConfigFlags;
 import brut.androlib.res.data.ResPackage;
 import brut.androlib.res.data.ResTable;
 import brut.androlib.res.data.ResUnknownFiles;
@@ -37,7 +38,10 @@ import brut.util.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.jf.dexlib2.iface.DexFile;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 import java.io.*;
 import java.util.*;
 import java.util.logging.Logger;
@@ -336,7 +340,7 @@ public class Androlib {
                 throw new AndrolibException(ex.getMessage());
             }
         }
-        LOGGER.info("Built apk...");
+        LOGGER.info("Built apk into: " + outFile.getPath());
     }
 
     private void buildManifestFile(File appDir, File manifest, File manifestOriginal)
@@ -489,7 +493,24 @@ public class Androlib {
                     }
                 }
 
-                File apkFile = File.createTempFile("APKTOOL", null, Environment.getExternalStorageDirectory());
+                if (buildOptions.netSecConf) {
+                    MetaInfo meta = readMetaFile(new ExtFile(appDir));
+                    if (meta.sdkInfo != null && meta.sdkInfo.get("targetSdkVersion") != null) {
+                        if (Integer.parseInt(meta.sdkInfo.get("targetSdkVersion")) < ResConfigFlags.SDK_NOUGAT) {
+                            LOGGER.warning("Target SDK version is lower than 24! Network Security Configuration might be ignored!");
+                        }
+                    }
+                    File netSecConfOrig = new File(appDir, "res/xml/network_security_config.xml");
+                    if (netSecConfOrig.exists()) {
+                        LOGGER.info("Replacing existing network_security_config.xml!");
+                        netSecConfOrig.delete();
+                    }
+                    ResXmlPatcher.modNetworkSecurityConfig(netSecConfOrig);
+                    ResXmlPatcher.setNetworkSecurityConfig(new File(appDir, "AndroidManifest.xml"));
+                    LOGGER.info("Added permissive network security config in manifest");
+                }
+
+                File apkFile = File.createTempFile("APKTOOL", null);
                 apkFile.delete();
                 resourceFile.delete();
                 File ninePatch = new File(appDir, "9patch");
@@ -520,7 +541,7 @@ public class Androlib {
                 apkFile.delete();
             }
             return true;
-        } catch (IOException | BrutException ex) {
+        } catch (IOException | BrutException | ParserConfigurationException | TransformerException | SAXException ex) {
             throw new AndrolibException(ex);
         }
     }
@@ -574,6 +595,7 @@ public class Androlib {
         } catch (IOException | DirectoryException ex) {
             throw new AndrolibException(ex);
         } catch (AndrolibException ex) {
+            ex.printStackTrace();
             LOGGER.warning("Parse AndroidManifest.xml failed, treat it as raw file.");
             return buildManifestRaw(appDir);
         }
@@ -762,7 +784,7 @@ public class Androlib {
     }
 
     public static String getVersion() {
-        return "2.6.1";
+        return ApktoolProperties.get("application.version");
     }
 
     private File[] parseUsesFramework(UsesFramework usesFramework)

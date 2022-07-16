@@ -19,6 +19,7 @@ package brut.androlib.res.xml;
 import brut.util.Duo;
 import org.apache.commons.lang3.StringUtils;
 
+//import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -208,6 +209,7 @@ public final class ResXmlEncoders {
 
     private static boolean isPrintableChar(char c) {
         Character.UnicodeBlock block = Character.UnicodeBlock.of(c);
-        return !Character.isISOControl(c) && block != null && block != Character.UnicodeBlock.SPECIALS;
+        return !Character.isISOControl(c) && c != Character.MAX_VALUE
+                && block != null && block != Character.UnicodeBlock.SPECIALS;
     }
 }

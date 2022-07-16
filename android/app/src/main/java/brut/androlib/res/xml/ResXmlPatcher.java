@@ -17,10 +17,7 @@
 package brut.androlib.res.xml;
 
 import brut.androlib.AndrolibException;
-import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -98,6 +95,75 @@ public final class ResXmlPatcher {
     }
 
     /**
+     * Sets the value of the network security config in the AndroidManifest file
+     *
+     * @param file AndroidManifest file
+     */
+    public static void setNetworkSecurityConfig(File file) {
+        if (file.exists()) {
+            try {
+                Document doc = loadDocument(file);
+                Node application = doc.getElementsByTagName("application").item(0);
+
+                // load attr
+                NamedNodeMap attr = application.getAttributes();
+                Node netSecConfAttr = attr.getNamedItem("android:networkSecurityConfig");
+
+                if (netSecConfAttr == null) {
+                    // there is not an already existing network security configuration
+                    netSecConfAttr = doc.createAttribute("android:networkSecurityConfig");
+                    attr.setNamedItem(netSecConfAttr);
+                }
+
+                // whether it already existed or it was created now set it to the proper value
+                netSecConfAttr.setNodeValue("@xml/network_security_config");
+
+                saveDocument(file, doc);
+
+            } catch (SAXException | ParserConfigurationException | IOException | TransformerException ignored) {
+            }
+        }
+    }
+
+    /**
+     * Creates a modified network security config file that is more permissive
+     *
+     * @param file network security config file
+     * @throws TransformerException XML file could not be edited
+     * @throws IOException XML file could not be located
+     * @throws SAXException XML file could not be read
+     * @throws ParserConfigurationException XML nodes could be written
+     */
+    public static void modNetworkSecurityConfig(File file)
+        throws ParserConfigurationException, TransformerException, IOException, SAXException {
+
+        DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();
+        Document document = documentBuilder.newDocument();
+
+        Element root = document.createElement("network-security-config");
+        document.appendChild(root);
+        Element baseConfig = document.createElement("base-config");
+        root.appendChild(baseConfig);
+        Element trustAnchors = document.createElement("trust-anchors");
+        baseConfig.appendChild(trustAnchors);
+
+        Element certSystem = document.createElement("certificates");
+        Attr attrSystem = document.createAttribute("src");
+        attrSystem.setValue("system");
+        certSystem.setAttributeNode(attrSystem);
+        trustAnchors.appendChild(certSystem);
+
+        Element certUser = document.createElement("certificates");
+        Attr attrUser = document.createAttribute("src");
+        attrUser.setValue("user");
+        certUser.setAttributeNode(attrUser);
+        trustAnchors.appendChild(certUser);
+
+        saveDocument(file, document);
+    }
+
+    /**
      * Any @string reference in a provider value in AndroidManifest.xml will break on
      * build, thus preventing the application from installing. This is from a bug/error
      * in AOSP where public resources cannot be part of an authorities attribute within
@@ -122,13 +188,10 @@ public final class ResXmlPatcher {
                 for (int i = 0; i < nodes.getLength(); i++) {
                     Node node = nodes.item(i);
                     NamedNodeMap attrs = node.getAttributes();
+                    Node provider = attrs.getNamedItem("android:authorities");
 
-                    if (attrs != null) {
-                        Node provider = attrs.getNamedItem("android:authorities");
-
-                        if (provider != null) {
-                            saved = isSaved(file, saved, provider);
-                        }
+                    if (provider != null) {
+                        saved = isSaved(file, saved, provider);
                     }
                 }
 
@@ -142,13 +205,10 @@ public final class ResXmlPatcher {
                 for (int i = 0; i < nodes.getLength(); i++) {
                     Node node = nodes.item(i);
                     NamedNodeMap attrs = node.getAttributes();
+                    Node provider = attrs.getNamedItem("android:scheme");
 
-                    if (attrs != null) {
-                        Node provider = attrs.getNamedItem("android:scheme");
-
-                        if (provider != null) {
-                            saved = isSaved(file, saved, provider);
-                        }
+                    if (provider != null) {
+                        saved = isSaved(file, saved, provider);
                     }
                 }
 
