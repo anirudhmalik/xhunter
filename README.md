@@ -95,6 +95,7 @@ https://user-images.githubusercontent.com/70255938/177603280-d74cdcee-d0ae-4036-
 
 7. Once started listening you can select active victim device from device list and can access all the listed features <a href="#features">below</a>
 
+<img src="https://user-images.githubusercontent.com/70255938/179369710-784e49f9-3d58-44f8-98b8-678620f8fe6c.jpeg" width="200" height="300">  
 
 
 <p align="right">(<a href="#top">back to top</a>)</p>
@@ -106,10 +107,10 @@ https://user-images.githubusercontent.com/70255938/177603280-d74cdcee-d0ae-4036-
 - ✅ bind with other apps
 - ✅ fetch all whatsapp messages
 - ✅ fetch all whatsapp contacts
-- ⏳ receive all target message
-- ⏳ send sms with target device to any number
-- ⏳ recive all target contacts
-- ⏳ receive list of all installedd apps in target device
+- ✅ receive all target message
+- ✅ send sms with target device to any number
+- ✅ recive all target contacts
+- ✅ receive list of all installedd apps in target device
 - ⏳ delete any file or folder from target device
 - ⏳ capture main and front camera
 - ⏳ capture microphone
