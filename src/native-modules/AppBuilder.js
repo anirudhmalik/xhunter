@@ -72,6 +72,16 @@ module.exports = {
         .then(data => response( data))
         .catch(err => response(err) );
     },
+    sshTunnel: async function ( c, response ) {
+        await AppBuilder.sshTunnel(c.user, c.host, c.pass, c.rport, c.lhost, c.lport)
+                .then(data => response( "s",data.message))
+                .catch(err => response( "e",err.message) );
+    },
+    sshTunnelDisconnect: async function ( response ) {
+        await AppBuilder.sshTunnelDisconnect()
+                .then(data => response( "s",data.message))
+                .catch(err => response( "e",err.message) );
+    },
     buildPayload: async function (ip, log ) {
         if (!ip) {
                 throw "Invalid ip address provided";

