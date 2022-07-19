@@ -500,6 +500,7 @@ final public class AndrolibResources {
     private void aapt1Package(File apkFile, File manifest, File resDir, File rawDir, File assetDir, File[] include,
                               List<String> cmd, boolean customAapt)
             throws AndrolibException {
+
         cmd.add("p");
 
         if (buildOptions.verbose) { // output aapt verbose
@@ -617,7 +618,7 @@ final public class AndrolibResources {
         String aaptPath = buildOptions.aaptPath;
         boolean customAapt = !aaptPath.isEmpty();
         List<String> cmd = new ArrayList<>();
-        LOGGER.warning("Preparing to execute");
+
         try {
             String aaptCommand = AaptManager.getAaptExecutionCommand(aaptPath, getAaptBinaryFile());
             cmd.add(aaptCommand);
@@ -701,7 +702,7 @@ final public class AndrolibResources {
     public Duo<ResFileDecoder, AXmlResourceParser> getResFileDecoder() {
         ResStreamDecoderContainer decoders = new ResStreamDecoderContainer();
         decoders.setDecoder("raw", new ResRawStreamDecoder());
-        //decoders.setDecoder("9patch", new Res9patchStreamDecoder());
+        decoders.setDecoder("9patch", new Res9patchStreamDecoder());
 
         AXmlResourceParser axmlParser = new AXmlResourceParser();
         axmlParser.setAttrDecoder(new ResAttrDecoder());

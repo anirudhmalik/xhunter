@@ -16,8 +16,6 @@
  */
 package brut.androlib;
 
-import android.os.Environment;
-
 import brut.androlib.meta.MetaInfo;
 import brut.androlib.meta.UsesFramework;
 import brut.androlib.options.BuildOptions;
@@ -324,7 +322,6 @@ public class Androlib {
         buildCopyOriginalFiles(appDir);
         buildApk(appDir, outFile);
 
-
         // we must go after the Apk is built, and copy the files in via Zip
         // this is because Aapt won't add files it doesn't know (ex unknown files)
         buildUnknownFiles(appDir, outFile, meta);
@@ -513,11 +510,11 @@ public class Androlib {
                 File apkFile = File.createTempFile("APKTOOL", null);
                 apkFile.delete();
                 resourceFile.delete();
+
                 File ninePatch = new File(appDir, "9patch");
                 if (!ninePatch.exists()) {
                     ninePatch = null;
                 }
-
                 mAndRes.aaptPackage(apkFile, new File(appDir,
                                 "AndroidManifest.xml"), new File(appDir, "res"),
                         ninePatch, null, parseUsesFramework(usesFramework));
@@ -537,6 +534,7 @@ public class Androlib {
                 } finally {
                     tmpExtFile.close();
                 }
+
                 // delete tmpDir
                 apkFile.delete();
             }
@@ -595,7 +593,6 @@ public class Androlib {
         } catch (IOException | DirectoryException ex) {
             throw new AndrolibException(ex);
         } catch (AndrolibException ex) {
-            ex.printStackTrace();
             LOGGER.warning("Parse AndroidManifest.xml failed, treat it as raw file.");
             return buildManifestRaw(appDir);
         }
