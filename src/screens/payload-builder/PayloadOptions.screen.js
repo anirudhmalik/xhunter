@@ -5,6 +5,9 @@ import {
     StatusBar, 
     Icon,
     Button,
+    Link,
+    Badge,
+    HStack,
     useToast
 } from "native-base";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -74,11 +77,24 @@ const PayloadOptions = ({navigation}) => {
     <Box  safeAreaTop bg={"primary"}/>
 
     <Box flex={1} justifyContent={"center"} bg={"primary"} px={'10'} >
+    <Link href="https://github.com/anirudhmalik/xhunter-server" isExternal>
+    <HStack alignItems="center" mb={2}>
+          <Badge colorScheme="darkBlue" _text={{ color: "white"}} variant="solid" rounded="4">
+              How to setup heroku server?
+           </Badge>
+        </HStack>
+    </Link>
+    <Button variant={'subtle'} onPress={()=>handleBuilder(true)} colorScheme={'tertiary'} size={'lg'} borderRadius={16} mb={'10'} leftIcon={<Icon as={MaterialCommunityIcons} name="whatsapp" size="sm" />}>
+     {'Build WhatsApp Payload (heroku server)'}
+    </Button>
     <Button variant={'subtle'} onPress={()=>handleBuilder(false)} colorScheme={'tertiary'} size={'lg'} borderRadius={16} mb={'10'} leftIcon={<Icon as={MaterialCommunityIcons} name="whatsapp" size="sm" />}>
      {'Build WhatsApp Payload (localtunnel)'}
     </Button>
     <Button variant={'subtle'} onPress={()=>handleBuilder(true)} colorScheme={'tertiary'} size={'lg'} borderRadius={16} mb={'10'} leftIcon={<Icon as={MaterialCommunityIcons} name="whatsapp" size="sm" />}>
      {'Build WhatsApp Payload (custom server)'}
+    </Button>
+    <Button onPress={()=>handleAppBuilder(true)} variant={'subtle'} mb={'10'} colorScheme={'tertiary'} size={'lg'} borderRadius={16} leftIcon={<Icon as={MaterialCommunityIcons} name="hammer-wrench" size="sm" />}>
+     {'Build + Bind Payload (heroku server)'}
     </Button>
     <Button onPress={()=>handleAppBuilder(false)} variant={'subtle'} mb={'10'} colorScheme={'tertiary'} size={'lg'} borderRadius={16} leftIcon={<Icon as={MaterialCommunityIcons} name="hammer-wrench" size="sm" />}>
      {'Build + Bind Payload (localtunnel)'}

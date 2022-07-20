@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Modal } from 'react-native';
-import { Box, Stack, Input, Icon, Button, Text, Pressable} from 'native-base';
+import { Stack, Input, Icon, Button, Text, Pressable} from 'native-base';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import AppBuilder from '../native-modules/AppBuilder'
@@ -14,17 +14,25 @@ const CustomInput = ({visible, setVisible, setVisibleLog}) => {
     const [url, setUrl]= useState("");
      
     const handleNext = async()=>{
-        if(url!=""){
+        if(url!= ""&&isUrlValid(url)){
             setVisible(false)
             setVisibleLog(true)
-            AppBuilder.buildPayload(`http://${url}:8080` ,addlog)
+            AppBuilder.buildPayload(url, addlog)
         }else{
-            setError("Input cannot be empty")
+            setError("Invalid host or url!")
         }
       }
     const addlog =( type, message ) => { 
         dispatch(addBuildPayloadLogs({ type, message})) 
     }
+
+    function isUrlValid(userInput) {
+      var res = userInput.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
+      if(res == null)
+          return false;
+      else
+          return true;
+  }
   return (
     <Modal
       animationType="fade"
@@ -37,7 +45,7 @@ const CustomInput = ({visible, setVisible, setVisibleLog}) => {
         <Input
             size="md"
             w={{ base: "100%", md: "25%" }}
-            placeholder="IP or Host i.e. 13.128.65.145, google.com"
+            placeholder="https://xyz.herokuapp.com"
             variant={'filled'}
             value={url}
             onChangeText={(d)=>setUrl(d)}

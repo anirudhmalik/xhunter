@@ -26,7 +26,6 @@ const CustomServerConfigScreen = ({visible, setVisible}) => {
         setLoading(true);
         AppBuilder.sshTunnel(config, (type, message)=>{
           if(type=="s"){
-            setVisible(false)
             nodejs.channel.post('startListener',"")
           }else{
             setError(message)

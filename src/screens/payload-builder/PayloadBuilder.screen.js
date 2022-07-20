@@ -27,7 +27,7 @@ const PayloadBuilder = ({navigation, route}) => {
     const toast = useToast();
     const dispatch = useDispatch();
     const { url } = route.params;
-    
+    console.log(url)
     const [targetApk,setTargetApk]=useState();
     const [visible, setVisible]= useState(false);
 
