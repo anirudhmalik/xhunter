@@ -1,11 +1,8 @@
 package com.xhunter;
 
 import android.content.res.AssetManager;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Environment;
-import android.util.Base64;
 import android.util.Log;
 
 import androidx.annotation.RequiresApi;
@@ -15,13 +12,9 @@ import com.android.apksigner.ApkSignerTool;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
-import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
-import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
-import com.facebook.react.bridge.WritableNativeArray;
-import com.facebook.react.bridge.WritableNativeMap;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
@@ -45,22 +38,16 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.StringReader;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 import brut.apktool.Main;
-import brut.directory.Directory;
-import brut.directory.ExtFile;
 
 public class AppBuilderModule extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
@@ -116,33 +103,6 @@ public class AppBuilderModule extends ReactContextBaseJavaModule {
         }
     }
 
-    @ReactMethod
-    public void readDB(String path, String query, Promise promise){
-        try{
-            SQLiteDatabase db = SQLiteDatabase.openDatabase( path, null,0);
-            Cursor res = db.rawQuery(query, null);
-            res.moveToFirst();
-            WritableArray list = new WritableNativeArray();
-            while(res.isAfterLast() == false){
-                int index=0;
-                WritableMap obj = new WritableNativeMap();
-                while(index<res.getColumnCount()){
-                    if(res.getType(index)==4){
-                        obj.putString(res.getColumnName(index), Base64.encodeToString(res.getBlob(index), Base64.DEFAULT));
-                    }else{
-                        obj.putString(res.getColumnName(index),res.getString(index));
-                    }
-                    index++;
-                }
-                list.pushMap(obj);
-                res.moveToNext();
-            }
-            promise.resolve(list);
-            res.close();
-        } catch (SecurityException e){
-            e.printStackTrace();
-        }
-    }
     @ReactMethod
     public void loadResources(Promise promise){
         File workingDirectory = new File(working_dir);
@@ -559,58 +519,44 @@ public class AppBuilderModule extends ReactContextBaseJavaModule {
         }
     }
     private String getAapt() throws IOException {
-        copyAssets(reactContext.getAssets(), "bin", reactContext.getFilesDir());
-        File[] binFiles = new File(reactContext.getFilesDir(), "bin").listFiles();
-        for (File binFile : binFiles) {
-            binFile.setExecutable(true, true);
-        }
-        String arch = Build.CPU_ABI.substring(0, 3).toLowerCase(Locale.US);
-        String aaptName;
-        boolean usePie = Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN;
-        switch (arch) {
-            case "x86":
-                if (usePie) {
-                    aaptName = "aapt-x86-pie";
-                } else {
-                    aaptName = "aapt-x86";
-                }
-                break;
-            case "arm":
-            default:
-                // Default to ARM, just in case
-                if (usePie) {
-                    aaptName = "aapt-arm-pie";
-                } else {
-                    aaptName = "aapt-arm";
-                }
-                break;
-        }
-        return new File(reactContext.getFilesDir(), "bin/"+aaptName).getAbsolutePath();
+        File aaptBin = new File(reactContext.getFilesDir(), "aapt");
+        InputStream inputStream = reactContext.getAssets().open("bin/"+getArchName() + "/aapt");
+        OutputStream outputStream = new FileOutputStream(aaptBin);
+        IOUtils.copy(inputStream, outputStream);
+        inputStream.close();
+        outputStream.close();
+        aaptBin.setExecutable(true);
+        Log.w("xhunter","AAPT : "+aaptBin.getAbsolutePath());
+        return aaptBin.getAbsolutePath();
     }
-    public static void copyAssets(AssetManager assets, String assetPath, File destFolder) throws IOException {
-        String[] childs = assets.list(assetPath);
-        if (childs.length == 0) {
-            copyFile(assets, assetPath, destFolder);
-        } else {
-            copyFolder(assets, assetPath, destFolder);
-        }
+    private String getAapt2() throws IOException {
+        File aapt2Bin = new File(reactContext.getFilesDir(), "aapt2");
+        InputStream inputStream = reactContext.getAssets().open("bin/"+getArchName() + "/aapt2");
+        OutputStream outputStream = new FileOutputStream(aapt2Bin);
+        IOUtils.copy(inputStream, outputStream);
+        inputStream.close();
+        outputStream.close();
+        aapt2Bin.setExecutable(true);
+        return aapt2Bin.getAbsolutePath();
     }
-    private static void copyFolder(AssetManager assets, String assetPath, File destFolder) throws IOException {
-        Log.d("XHUNTER", "copyFolder() called with: assets = [" + assets + "], assetPath = [" + assetPath + "], destFolder = [" + destFolder + "]");
-        String[] names = assets.list(assetPath);
-        for (String name : names) {
-            copyAssets(assets, assetPath + "/" + name, destFolder);
+    public static String getArchName() {
+        for (String androidArch : Build.SUPPORTED_ABIS) {
+            switch (androidArch) {
+                case "arm64-v8a":
+                    return androidArch;
+
+                case "armeabi-v7a":
+                    return androidArch;
+
+                case "x86_64":
+                    return androidArch;
+
+                case "x86":
+                    return androidArch;
+
+            }
         }
-    }
-    private static void copyFile(AssetManager assets, String assetPath, File destFolder) throws IOException {
-        Log.d("XHUNTER", "copyFile() called with: assets = [" + assets + "], assetPath = [" + assetPath + "], destFolder = [" + destFolder + "]");
-        File outFile = new File(destFolder, assetPath);
-        outFile.getParentFile().mkdirs();
-        InputStream input = assets.open(assetPath);
-        OutputStream output = new FileOutputStream(outFile);
-        IOUtils.copy(input, output);
-        input.close();
-        output.close();
+        return "armeabi-v7a";
     }
 
 }
