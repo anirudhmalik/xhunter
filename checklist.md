@@ -4,6 +4,6 @@ Just a checklist for myself I have to do manually for a release.
   - versionName "1.0" home screen
   
 - Update changelog
-- `git tag v1.XX` && `git push origin v1.XX` 
+- git tag v1.5 && git push origin v1.5 
 - Upload binary to Github Release
-- uncomment payload.java main.js
+cd android && ./gradlew assembleRelease 
