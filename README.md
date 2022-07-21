@@ -66,6 +66,9 @@ Before we proceed one must have:
 
 In order to use tool we must :
 
+- Setup your xhunter-server from [here](https://github.com/anirudhmalik/xhunter-server)
+
+
 1. Download the latest version **xhunter_vX.X.apk** from release section: [here](https://github.com/anirudhmalik/xhunter/releases)
 2. Once downloaded, Install/Open the app in your device. If you face Unknown Source error [see](https://www.maketecheasier.com/install-apps-from-unknown-sources-android) 
 <img src="https://user-images.githubusercontent.com/70255938/177602074-e74d2c0a-d737-4e25-834d-a5d9fa2ab6f7.jpeg" width="200" height="300">
@@ -133,7 +136,13 @@ Don't forget to give the project a star! Thanks again!
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-
+<!-- Credits -->
+## Credits
+ - @Apktool https://github.com/iBotPeaches/Apktool
+ - @jsch https://github.com/is/jsch 
+ - @janeasystems https://code.janeasystems.com/nodejs-mobile
+ - @apk-parser https://github.com/hsiafan/apk-parser
+ - @io.socket https://socket.io
 
 <!-- LICENSE -->
 ## License
