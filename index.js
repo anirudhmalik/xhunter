@@ -10,7 +10,8 @@ import { LogBox } from 'react-native';
 
 LogBox.ignoreLogs([
   "[react-native-gesture-handler] Seems like you\'re using an old API with gesture components, check out new Gestures system!",
-  "NativeBase"
+  "NativeBase",
+  "Require cycle: node_modules/rn-fetch-blob/index.js"
 ]);
 AppRegistry.registerComponent(appName, () => App);
 nodejs.start("main.js");

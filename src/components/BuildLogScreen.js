@@ -61,6 +61,14 @@ const Line =({item, onPress})=>{
               textColor="purple.400"
               iconColor="purple.500"
               iconName="anchor"
+            }else if(item.type==="ex"){
+              textColor="white"
+              iconColor="teal.500"
+              iconName="bug-report"
+            }else if(item.type==="sp"){
+              textColor="white"
+              iconColor="yellow.600"
+              iconName="chevron-right"
             }
          return(
            <>
