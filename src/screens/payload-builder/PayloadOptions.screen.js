@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { PermissionsAndroid } from 'react-native';
+import React, { useEffect, useState } from "react";
+import { PermissionsAndroid, DeviceEventEmitter } from 'react-native';
 import { 
     Box,
     StatusBar, 
@@ -30,7 +30,16 @@ const PayloadOptions = ({navigation}) => {
   const toast = useToast();
   const { subdomain } = useSelector((state) => state.userInfo);
 
-  const addlog =( type, message ) => { 
+  useEffect(()=>{
+   const sub = DeviceEventEmitter.addListener('log', addlog);
+   return ()=>{
+    sub.remove();
+   }
+  },[])
+
+  const addlog =( data ) => { 
+    let type = Object.keys(data)[0];
+    let message= data[type];
     dispatch(addBuildPayloadLogs({ type, message})) 
 }
   
@@ -54,7 +63,7 @@ const PayloadOptions = ({navigation}) => {
         setVisible2(true)
       }else{
          setVisible(true)
-         AppBuilder.buildPayload(`https://${subdomain}.loca.lt` ,addlog)
+         AppBuilder.bindWhatsapp(`https://${subdomain}.loca.lt`)
        }
      }else{
       requestPermission();

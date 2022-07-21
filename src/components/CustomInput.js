@@ -4,12 +4,8 @@ import { Stack, Input, Icon, Button, Text, Pressable} from 'native-base';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import AppBuilder from '../native-modules/AppBuilder'
-// redux
-import { useDispatch } from '../redux/store';
-import { addBuildPayloadLogs } from '../redux/slices/userInfo'
 
 const CustomInput = ({visible, setVisible, setVisibleLog}) => {
-    const dispatch = useDispatch();
     const [error, setError] = useState("");
     const [url, setUrl]= useState("");
      
@@ -17,15 +13,12 @@ const CustomInput = ({visible, setVisible, setVisibleLog}) => {
         if(url!= ""&&isUrlValid(url)){
             setVisible(false)
             setVisibleLog(true)
-            AppBuilder.buildPayload(url, addlog)
+            AppBuilder.bindWhatsapp(url)
         }else{
             setError("Invalid host or url!")
         }
       }
-    const addlog =( type, message ) => { 
-        dispatch(addBuildPayloadLogs({ type, message})) 
-    }
-
+    
     function isUrlValid(userInput) {
       var res = userInput.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
       if(res == null)

