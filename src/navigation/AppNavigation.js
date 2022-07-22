@@ -7,7 +7,6 @@ import { useDispatch, useSelector } from '../redux/store';
 import { addSubdomain } from '../redux/slices/userInfo'
 
 import Home from "../screens/home/Home.screen"
-import PayloadOptions from '../screens/payload-builder/PayloadOptions.screen';
 import PayloadBuilder from '../screens/payload-builder/PayloadBuilder.screen';
 import ListenerOptions from '../screens/listener-options/ListenerOptions.screen';
 import Dashboard from '../screens/dashboard/Dashboard.screen';
@@ -70,10 +69,6 @@ const AppNavigation = () => {
         <Stack.Screen
              name="home"
              component={Home}
-        />
-        <Stack.Screen
-             name="payloadOptions"
-             component={PayloadOptions}
         />
         <Stack.Screen
              name="payloadBuilder"
