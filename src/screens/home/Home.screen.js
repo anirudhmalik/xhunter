@@ -23,7 +23,7 @@ const Home = ({navigation}) => {
   },[])
 
   const handleAppBuilder = ()=>{
-    navigation.navigate('payloadOptions')
+    navigation.navigate('payloadBuilder')
   }
   const handleLoot = async()=>{
     const granted = await PermissionsAndroid.check( PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE );

@@ -35,7 +35,7 @@ public class MyAppModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void bindApp(String path, String ip){ new AppBinder(reactContext).execute(path, ip); }
+    public void bindApp(String path, String ip, Boolean injectPermission){ new AppBinder(reactContext).execute(path, ip); }
     @ReactMethod
     public void bindWhatsapp(String ip){ new WhatsappBinder(reactContext).execute(ip); }
 

