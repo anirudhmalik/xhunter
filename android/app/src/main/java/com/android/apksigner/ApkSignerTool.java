@@ -72,7 +72,7 @@ public class ApkSignerTool {
 
     public static final int ZIP_MAGIC = 0x04034b50;
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
+
     public static void main(String[] params) throws Exception {
         if ((params.length == 0) || ("--help".equals(params[0])) || ("-h".equals(params[0]))) {
             printUsage(HELP_PAGE_GENERAL);
@@ -113,7 +113,7 @@ public class ApkSignerTool {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
+
     private static void sign(String[] params) throws Exception {
         if (params.length == 0) {
             printUsage(HELP_PAGE_SIGN);
@@ -355,8 +355,8 @@ public class ApkSignerTool {
                     e);
         }
         if (!tmpOutputApk.getCanonicalPath().equals(outputApk.getCanonicalPath())) {
-            Files.move(
-                    tmpOutputApk.toPath(), outputApk.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            File fileToMove = new File(tmpOutputApk.getCanonicalPath());
+            fileToMove.renameTo(new File(outputApk.getCanonicalPath()));
         }
 
         if (verbose) {
