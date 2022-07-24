@@ -123,5 +123,12 @@ const data = [
         option:'Send SMS',
         iconColor:'pink.500',
         navigate: 'sendSms'
+    },
+    {
+        id:'8',
+        icon:"map-marker",
+        option:'GPS Location',
+        iconColor:'error.500',
+        navigate: 'location'
     }
 ]

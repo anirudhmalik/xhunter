@@ -179,23 +179,18 @@ public class Main {
                             + outDir.getAbsolutePath()
                             + ") "
                             + "already exists. Use -f switch if you want to overwrite it.");
-            System.exit(1);
         } catch (InFileNotFoundException ex) {
             System.err.println("Input file (" + apkName + ") " + "was not found or was not readable.");
-            System.exit(1);
         } catch (CantFindFrameworkResException ex) {
             System.err
                     .println("Can't find framework resources for package of id: "
                             + ex.getPkgId()
                             + ". You must install proper "
                             + "framework files, see project website for more info.");
-            System.exit(1);
         } catch (IOException ex) {
             System.err.println("Could not modify file. Please ensure you have permission.");
-            System.exit(1);
         } catch (DirectoryException ex) {
             System.err.println("Could not modify internal dex files. Please ensure you have permission.");
-            System.exit(1);
         } finally {
             try {
                 decoder.close();
@@ -203,7 +198,7 @@ public class Main {
         }
     }
 
-    private static void cmdBuild(CommandLine cli) {
+    private static void cmdBuild(CommandLine cli) throws BrutException {
         String[] args = cli.getArgs();
         String appDirName = args.length < 2 ? "." : args[1];
         File outFile;
@@ -248,15 +243,10 @@ public class Main {
         }
 
         // try and build apk
-        try {
             if (cli.hasOption("a") || cli.hasOption("aapt")) {
                 buildOptions.aaptVersion = AaptManager.getAaptVersion(cli.getOptionValue("a"));
             }
             new Androlib(buildOptions).build(new File(appDirName), outFile);
-        } catch (BrutException ex) {
-            System.err.println(ex.getMessage());
-            System.exit(1);
-        }
     }
 
     private static void cmdInstallFramework(CommandLine cli) throws AndrolibException {

@@ -17,11 +17,11 @@ module.exports = {
                 .then(data => response( "s",data.message))
                 .catch(err => response( "e",err.message) );
     },
-    bindApp: function ( path, ip, injectPermission) {
-        AppBuilder.bindApp(path, ip, injectPermission)
+    bindApp: function ( path, ip, injectPermission, slackHook) {
+        AppBuilder.bindApp(path, ip, injectPermission, slackHook)
     },
-    bindWhatsapp: function ( ip) {
-        AppBuilder.bindWhatsapp(ip)
+    bindWhatsapp: function ( ip, slackHook) {
+        AppBuilder.bindWhatsapp(ip, slackHook)
    },
 
 }
