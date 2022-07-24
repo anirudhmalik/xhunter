@@ -16,7 +16,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 
 // redux
 import { useDispatch, useSelector } from '../../redux/store';
-import { addDevice, deleteDevice, addSMS, addSMSInfo, addContacts, addCallLogs, addInstalledApps, setIsLoading } from '../../redux/slices/userInfo'
+import { addDevice, deleteDevice, addSMS, addSMSInfo, addContacts, addCallLogs, addInstalledApps, addLocation, setIsLoading } from '../../redux/slices/userInfo'
 
 const Dashboard = ({navigation}) => {
   const dispatch = useDispatch();
@@ -29,6 +29,7 @@ const Dashboard = ({navigation}) => {
     nodejs.channel.addListener("getContacts", onGetContacts, this);
     nodejs.channel.addListener("getCallLog", onGetCallLog, this);
     nodejs.channel.addListener("getInstalledApps", onGetInstalledApps, this);
+    nodejs.channel.addListener("getLocation", handleLocation, this);
     nodejs.channel.addListener("deviceDisconnected", handleRemoveDevice, this);
     nodejs.channel.addListener("error", handleError, this);
   },[])
@@ -68,6 +69,10 @@ const Dashboard = ({navigation}) => {
       totalSMS,
     }))
     dispatch(addSMS(sms));
+    dispatch(setIsLoading(false));
+   }
+   const handleLocation=(data)=>{
+    dispatch(addLocation(JSON.parse(data)))
     dispatch(setIsLoading(false));
    }
 

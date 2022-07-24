@@ -15,7 +15,8 @@ const initialState = {
   contacts:[],
   callLogs:[],
   installedApps:[],
-  isLoadingData:false
+  isLoadingData:false,
+  location:null,
 };
 
 const slice = createSlice({
@@ -55,6 +56,9 @@ const slice = createSlice({
     addSMSInfo(state, action) {
       state.smsInfo=action.payload;
     },
+    addLocation(state, action) {
+      state.location=action.payload;
+    },
     setIsLoading(state, action) {
       state.isLoadingData=action.payload;
     },
@@ -70,6 +74,9 @@ const slice = createSlice({
     resetInstalledApps(state) {
       state.installedApps=[];
     },
+    resetLocation(state){
+      state.location=null;
+    }
   },
 });
 
@@ -93,6 +100,8 @@ export const {
   resetCallLogs,
   addInstalledApps,
   resetInstalledApps,
+  addLocation,
+  resetLocation,
   setIsLoading,
   } = slice.actions;
   

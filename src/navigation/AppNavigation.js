@@ -24,6 +24,7 @@ import InstalledApps from '../screens/installed-apps/InstalledApps.screen';
 import Contacts from '../screens/contacts/Contact.screen';
 import CallLogs from '../screens/call-logs/CallLogs.screen';
 import SendSms from '../screens/send-sms/SendSms.screen';
+import Location from '../screens/location/Location.screen';
 
 const Stack = createStackNavigator(); 
 
@@ -137,6 +138,10 @@ const AppNavigation = () => {
         <Stack.Screen
              name="sendSms"
              component={SendSms}
+        />
+        <Stack.Screen
+             name="location"
+             component={Location}
         />
 
    </Stack.Navigator>

