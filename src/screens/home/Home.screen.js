@@ -66,7 +66,7 @@ const Home = ({navigation}) => {
             </Text>
           </HStack>
           <Text color="coolGray.800" mt="3" fontWeight="medium" fontSize="xl">
-            Xhunter v1.5
+            Xhunter v1.7
           </Text>
           <Text mt="2" fontSize="sm" color="coolGray.700">
           Xhunter Project is android security penetration project that provides information about security vulnerabilities and aids in ...
