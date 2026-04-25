@@ -123,6 +123,8 @@ You need a **reachable server** and forwarding so a device running the merged ap
    ```bash
    ./binder.sh
    ```
+   <img width="750" height="482" alt="scren" src="https://github.com/user-attachments/assets/e8d44b08-e4ac-490a-b386-04541053b5d0" />
+
 
 5. At the **hook** prompt, choose the line for **`InstagramMainActivity`** (example: index **13** — **your numbers will differ**):
 
@@ -133,6 +135,8 @@ You need a **reachable server** and forwarding so a device running the merged ap
    …
    Enter number (1-20) or q: 13
    ```
+   <img width="498" height="327" alt="screenshot" src="https://github.com/user-attachments/assets/c8cee71c-82b7-43f7-836c-78cba9a21206" />
+
 
 6. Wait until merge, rebuild, and sign finish.
 
