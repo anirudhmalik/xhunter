@@ -69,7 +69,10 @@ You need a **reachable server** and forwarding so a device running the merged ap
 
 #### 1.1 — Cloud server and SSH access
 
-* Spin up **Ubuntu** on a VPS or **EC2** (or similar). In the security group / firewall, allow what you need (often **22** and forwarded ports, e.g. **8080** on the server side for this flow).
+* Spin up **Ubuntu** on a VPS or **EC2** (or similar). In the **security group** / **firewall** / **ufw** — **inbound** rules must at least:
+  * **TCP 22** — SSH (so you can administer the host).
+  * **TCP 8080** — **required** for the default Xhunter tunnel / client path in this walkthrough (remote listen side). If you use a different port in the app, open that one instead, but **do not** leave **8080** closed if the client is configured to use it.
+  * Allow the sources you trust (e.g. `0.0.0.0/0` for testing, or your IPs only in production). **Outbound** is usually *allow all* on cloud images; the critical part is **inbound 8080 + 22** so sessions can reach the listener and you can log in.
 * Log in, for example:
 
   ```bash
@@ -78,7 +81,7 @@ You need a **reachable server** and forwarding so a device running the merged ap
 
   On some AMIs the user is **`ec2-user`** instead of **`ubuntu`**.
 
-* Optional: `sudo passwd ubuntu` (or your user).
+* **Set a login password** for the account you use with the app’s password-based SSH tunnel: `sudo passwd ubuntu` (replace `ubuntu` with your user, e.g. `ec2-user` on some AMIs). The Xhunter tunnel flow in this guide expects you to use this password from the phone.
 
 #### 1.2 — `sshd_config`: `GatewayPorts` and password auth
 
@@ -87,13 +90,15 @@ You need a **reachable server** and forwarding so a device running the merged ap
 1. Edit `/etc/ssh/sshd_config` (or a drop-in under `sshd_config.d/`):
    * **`GatewayPorts no` → `yes`**
    * If you use password login: **`PasswordAuthentication no` → `yes`**
-2. Restart SSH:
+2. Restart SSH (use whichever works on your distro):
 
    ```bash
    sudo systemctl restart ssh
+   # or:
+   sudo systemctl restart sshd
+   # or (SysV-style):
+   sudo service sshd restart
    ```
-
-   (Some distros use the `sshd` unit name.)
 
 3. In **Xhunter** (with `xhunter-demo.apk`), set **host**, **user**, **password** (and ports) to match. After the tunnel is up, use the same **public IP** as **`HOST`** when building a merged client.
 
