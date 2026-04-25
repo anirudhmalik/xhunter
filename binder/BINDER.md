@@ -1,0 +1,45 @@
+# XHUNTER — binder `config.txt` reference
+
+Merging the client into a **host APK** is done on a PC (**Mac**, **Linux**, **Windows** with **Git Bash** or **WSL**), not on the phone. **Setup and end-to-end steps** (VPS, `cd binder`, hook menu, devices) are in the **[main README](../README.md)**.
+
+This file documents only the **`config.txt`** keys. Optional keys match what `binder.sh` reads; leave them commented in the template to use built-in defaults.
+
+## What is in the `binder` folder
+
+| Item | What it is for |
+|------|-----------------|
+| `setup.sh` | Confirms **Java** and that bundled files under `vendor/` (tools, client package, signing) are present. |
+| `binder.sh` | Runs the merge from **`config.txt`**. You get an **interactive list** to choose the hook activity (use a real terminal, not a pipe). |
+| `config.txt` | You edit: at minimum **`HOST`** and **`HOST_APK`**. |
+| `vendor/` | Apktool, client APK, and signing material used unless you override signing paths below. |
+| `apps/` | Put your **own** host APK here (e.g. `instagram.apk`) to match `HOST_APK`; the distribution does not ship it. |
+
+## `config.txt` parameters
+
+One `KEY=value` per line. Lines starting with `#` are comments. **UTF-8**; on Windows use **LF** line endings. Paths are **absolute** or **relative to the `binder` directory** (where `config.txt` lives).
+
+### Required
+
+| Key | Meaning |
+|-----|---------|
+| **`HOST`** | Address the **merged** app uses to reach your server (same as **VPS / server IP** in the main README, after the tunnel is working). |
+| **`HOST_APK`** | Path to the host APK to merge, e.g. `apps/instagram.apk` after you add that file under `apps/`. |
+
+### Optional
+
+| Key | Meaning |
+|-----|---------|
+| **`OUT_APK`** | Output signed APK. Default: `./out/xhunter-merged.apk` (relative to `binder/`). |
+| **`WORK_DIR`** | Apktool workspace. Empty = temp dir; set a path to keep decode output. |
+| **`SIGN_KEY`** | Private signing key (PKCS#8). If unset, default under `vendor/client/`. |
+| **`SIGN_CERT`** | Signing cert (PEM). If unset, default under `vendor/client/`. |
+| **`MIN_SDK`** | Minimum API level; leave commented for binder default. |
+| **`INJECT_PERMISSIONS`** | `true` / `false` — merge client permissions into the host manifest. |
+| **`HOOK_LIST_MAX`** | Max activities listed in the hook menu. |
+| **`KEEP_WORK`** | `true` to keep apktool workspace on success. |
+| **`AAPT2`** | Path to **aapt2** if auto-detection fails. |
+| **`FRAMEWORK_DIR`** | Optional apktool framework path. |
+
+## Use responsibly
+
+Only merge and install software you are allowed to modify and use. You are responsible for laws and app-store rules.

