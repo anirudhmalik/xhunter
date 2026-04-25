@@ -116,7 +116,7 @@ You need a **reachable server** and forwarding so a device running the merged ap
    ./setup.sh
    ```
 
-3. Edit **`config.txt`:** set **`HOST`** to your **VPS IP**. The sample line **`HOST_APK=apps/instagram.apk`** expects a file at **`binder/apps/instagram.apk`**. This repo’s **`binder/apps/`** folder does **not** include `instagram.apk` (host APKs are your responsibility). Copy your own host APK in and name it `instagram.apk`, or set **`HOST_APK`** to a different path. See [binder/BINDER.md](binder/BINDER.md) for optional keys.
+3. Edit **`config.txt`:** set **`HOST`** to your **VPS IP**. The sample line **`HOST_APK=apps/instagram.apk`** expects a file at **`binder/apps/instagram.apk`**. This repo’s **`binder/apps/`** folder does **not** ship a host APK — obtain one yourself (e.g. download the Instagram Android APK, then save it as `instagram.apk` in `binder/apps/`). Example third-party link (use at your own risk; not affiliated): [download Instagram APK (Softonic)](https://instagram.en.softonic.com/android/download?ex=MATE-1430.0&rex=true). You can set **`HOST_APK`** to any path; see [binder/BINDER.md](binder/BINDER.md) for optional keys.
 
 4. Run (real terminal, not a pipe):
 
