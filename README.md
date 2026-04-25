@@ -36,6 +36,27 @@ Use of **XHUNTER** against people or systems **without** clear **authorization**
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
+## Screenshots
+
+<table>
+  <tr>
+    <td align="center" valign="top"><img width="290" height="377" alt="Screen 1" src="https://github.com/user-attachments/assets/aee39d8d-f7a9-40c3-8509-332391f36ed9" /></td>
+    <td align="center" valign="top"><img width="285" height="587" alt="Screen 2" src="https://github.com/user-attachments/assets/c8b18016-1373-4bc5-881e-b38ee44fa42a" /></td>
+    <td align="center" valign="top"><img width="295" height="589" alt="Screen 3" src="https://github.com/user-attachments/assets/0bfd6672-5c3b-4576-82ba-09fda78eed52" /></td>
+  </tr>
+  <tr>
+    <td align="center" valign="top"><img width="296" height="342" alt="Screen 4" src="https://github.com/user-attachments/assets/eca7a3a5-132c-4762-8a99-761a7af98bc5" /></td>
+    <td align="center" valign="top"><img width="292" height="422" alt="Screen 5" src="https://github.com/user-attachments/assets/4ccc4e8b-06fc-438a-b486-b5f4ece4c914" /></td>
+    <td align="center" valign="top"><img width="292" height="591" alt="Screen 6" src="https://github.com/user-attachments/assets/ed905f4d-0018-468b-892b-defc2bcb80cb" /></td>
+  </tr>
+  <tr>
+    <td align="center" valign="top"><img width="289" height="472" alt="Screen 7" src="https://github.com/user-attachments/assets/a7d89ebd-5223-450a-9879-65f51697e7cb" /></td>
+    <td align="center" valign="top"><img width="295" height="321" alt="Screen 8" src="https://github.com/user-attachments/assets/0c7ffd71-30eb-44aa-ae3e-3de6c45384b7" /></td>
+    <td align="center" valign="top"><img width="291" height="591" alt="Screen 9" src="https://github.com/user-attachments/assets/093cb7b3-6141-43f0-aa9e-be4209929616" /></td>
+  </tr>
+</table>
+
+
 <!-- ABOUT THE PROJECT -->
 ## About the project (v2 demo)
 
@@ -169,6 +190,7 @@ You need a **reachable server** and forwarding so a device running the merged ap
 * **v2.0 demo** badge, **Settings**, **About**, and in-app **legal** text.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
+
 
 ## Files in this tree (expect)
 
