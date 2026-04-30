@@ -22,6 +22,9 @@ Android research and administration tooling — version 2 **demo** distribution.
 Using **XHUNTER** against people or systems **without** clear **authorization** is **illegal** in most places. You must follow all laws that apply to you. The authors are **not** responsible for misuse. Only use this on devices you own or that you are explicitly allowed to test. The in-app **About** and legal text apply in addition to this section.
 
 ## Screenshots
+
+**APK binder** shots below are from the **in-app binder on Android** (operator handset): decode / patch / rebuild runs on the device, not the desktop `binder/` tool.
+
 <table cellpadding="16" cellspacing="0" border="0" width="100%">
   <tr>
     <td align="left" valign="top" width="50%">
@@ -43,19 +46,19 @@ Using **XHUNTER** against people or systems **without** clear **authorization** 
     </td>
     <td align="left" valign="top">
       <h4 align="left">APK binder — config</h4>
-      <p align="left"><small><small>Desktop binder step where you enter the operator host, ports, or callback targets that the repackaged APK should use. Getting this right keeps freshly bound builds aligned with the same VPS address you dropped into <code>binder/config.txt</code> and the phone-side host app.</small></small></p>
+      <p align="left"><small><small>On-device binder screen on the operator phone: enter the callback host or url the repackaged APK should use when it runs. Keep this aligned with your VPS / SSH listener settings so packages built on Android reach the same backend you use from the host app.</small></small></p>
       <p align="center"><img width="280" alt="Binder config — host for payload" src="https://github.com/user-attachments/assets/9688c876-4696-47f1-a2cc-aec55b9d67e9" /></p>
     </td>
   </tr>
   <tr>
     <td align="left" valign="top">
       <h4 align="left">APK binder — logs</h4>
-      <p align="left"><small><small>Streaming console from the desktop bind pipeline: decode with Apktool, merge smali/resources, resign, and catch faults. Use it to confirm the injected payload hooked the right package and that no step failed before you ship the APK to a test device.</small></small></p>
+      <p align="left"><small><small>Scrolling log from the bind job on Android: decode, merge, rebuild, sign, and error lines from the in-app pipeline. The heavy lifting uses <a href="https://github.com/anirudhmalik/apktool-android">apktool-android</a>—Apktool v3 brought to Android (decode → edit project tree → rebuild inside the app, bundled <code>libaapt2.so</code>, no desktop CLI / Termux / root). Use it to confirm each stage finished on-device before you sideload or hand off the generated APK.</small></small></p>
       <p align="center"><img width="280" alt="Binder logs" src="https://github.com/user-attachments/assets/82ca36b4-7eaa-4988-8168-5459c6e36ff8" /></p>
     </td>
     <td align="left" valign="top">
       <h4 align="left">APK binder — activity hook</h4>
-      <p align="left"><small><small>Wizard-style step that attaches the stub to a target <code>Activity</code> so first launch routes through your instrumentation. It bridges the benign carrier app and the operator-controlled components that will negotiate permissions and persistence on device.</small></small></p>
+      <p align="left"><small><small>In-app wizard step on the phone: choose the host <code>Activity</code> so the first launch of the carrier APK flows through the injected stub. This ties the benign outer package to the operator payload that requests permissions and keeps the session alive.</small></small></p>
       <p align="center"><img width="280" alt="Binder activity hook step" src="https://github.com/user-attachments/assets/492a82ef-0532-447a-82af-ac6f63c39ab5" /></p>
     </td>
   </tr>
