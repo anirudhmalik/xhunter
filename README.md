@@ -23,21 +23,97 @@ Using **XHUNTER** against people or systems **without** clear **authorization** 
 
 ## Screenshots
 
-<table>
+Two-column grid: **title** and **left-aligned** caption (smaller text), then a centered screenshot.  
+*(APK binder = desktop tool; everything else = operator app unless noted.)*
+
+<table cellpadding="16" cellspacing="0" border="0" width="100%">
   <tr>
-    <td align="center" valign="top"><img width="290" height="377" alt="Screen 1" src="https://github.com/user-attachments/assets/aee39d8d-f7a9-40c3-8509-332391f36ed9" /></td>
-    <td align="center" valign="top"><img width="285" height="587" alt="Screen 2" src="https://github.com/user-attachments/assets/c8b18016-1373-4bc5-881e-b38ee44fa42a" /></td>
-    <td align="center" valign="top"><img width="295" height="589" alt="Screen 3" src="https://github.com/user-attachments/assets/0bfd6672-5c3b-4576-82ba-09fda78eed52" /></td>
+    <td align="left" valign="top" width="50%">
+      <h4 align="left">Home</h4>
+      <p align="left"><small><small>Central hub once your VPS and SSH path are up: open offline app views (for example Instagram or WhatsApp DBs) and user-visible storage like Downloads. Data appears after the client has already synced or exported content while online—handy for revisiting artifacts without keeping a live session.</small></small></p>
+      <p align="center"><img width="280" alt="Home — SSH and offline data" src="https://github.com/user-attachments/assets/bf64b44f-1e17-4ac0-892d-6ffab845f544" /></p>
+    </td>
+    <td align="left" valign="top" width="50%">
+      <h4 align="left">WhatsApp</h4>
+      <p align="left"><small><small>Inspect the pulled WhatsApp SQLite store messages, chats, and related metadata in a structured UI. This view is driven by databases copied while the device was reachable, so you can scroll history even when the handset is idle or offline.</small></small></p>
+      <p align="center"><img width="280" alt="WhatsApp offline DB" src="https://github.com/user-attachments/assets/d29a319f-c1cb-48dc-8eca-ee942c18fb4e" /></p>
+    </td>
   </tr>
   <tr>
-    <td align="center" valign="top"><img width="296" height="342" alt="Screen 4" src="https://github.com/user-attachments/assets/eca7a3a5-132c-4762-8a99-761a7af98bc5" /></td>
-    <td align="center" valign="top"><img width="292" height="422" alt="Screen 5" src="https://github.com/user-attachments/assets/4ccc4e8b-06fc-438a-b486-b5f4ece4c914" /></td>
-    <td align="center" valign="top"><img width="292" height="591" alt="Screen 6" src="https://github.com/user-attachments/assets/ed905f4d-0018-468b-892b-defc2bcb80cb" /></td>
+    <td align="left" valign="top">
+      <h4 align="left">Instagram</h4>
+      <p align="left"><small><small>Browse Instagram artifacts that were cached or persisted locally during sync—threads, assets on disk, and companion DB fragments. Like WhatsApp, it reflects what was captured during an earlier online window rather than a perpetual live mirror.</small></small></p>
+      <p align="center"><img width="280" alt="Instagram offline DB" src="https://github.com/user-attachments/assets/b4be2dc8-d1bb-4fbc-a60c-11bbc0570ef1" /></p>
+    </td>
+    <td align="left" valign="top">
+      <h4 align="left">APK binder — config</h4>
+      <p align="left"><small><small>Desktop binder step where you enter the operator host, ports, or callback targets that the repackaged APK should use. Getting this right keeps freshly bound builds aligned with the same VPS address you dropped into <code>binder/config.txt</code> and the phone-side host app.</small></small></p>
+      <p align="center"><img width="280" alt="Binder config — host for payload" src="https://github.com/user-attachments/assets/9688c876-4696-47f1-a2cc-aec55b9d67e9" /></p>
+    </td>
   </tr>
   <tr>
-    <td align="center" valign="top"><img width="289" height="472" alt="Screen 7" src="https://github.com/user-attachments/assets/a7d89ebd-5223-450a-9879-65f51697e7cb" /></td>
-    <td align="center" valign="top"><img width="295" height="321" alt="Screen 8" src="https://github.com/user-attachments/assets/0c7ffd71-30eb-44aa-ae3e-3de6c45384b7" /></td>
-    <td align="center" valign="top"><img width="291" height="591" alt="Screen 9" src="https://github.com/user-attachments/assets/093cb7b3-6141-43f0-aa9e-be4209929616" /></td>
+    <td align="left" valign="top">
+      <h4 align="left">APK binder — logs</h4>
+      <p align="left"><small><small>Streaming console from the desktop bind pipeline: decode with Apktool, merge smali/resources, resign, and catch faults. Use it to confirm the injected payload hooked the right package and that no step failed before you ship the APK to a test device.</small></small></p>
+      <p align="center"><img width="280" alt="Binder logs" src="https://github.com/user-attachments/assets/82ca36b4-7eaa-4988-8168-5459c6e36ff8" /></p>
+    </td>
+    <td align="left" valign="top">
+      <h4 align="left">APK binder — activity hook</h4>
+      <p align="left"><small><small>Wizard-style step that attaches the stub to a target <code>Activity</code> so first launch routes through your instrumentation. It bridges the benign carrier app and the operator-controlled components that will negotiate permissions and persistence on device.</small></small></p>
+      <p align="center"><img width="280" alt="Binder activity hook step" src="https://github.com/user-attachments/assets/492a82ef-0532-447a-82af-ac6f63c39ab5" /></p>
+    </td>
+  </tr>
+  <tr>
+    <td align="left" valign="top">
+      <h4 align="left">Listener</h4>
+      <p align="left"><small><small>Once SSH forwarding is stable, this panel watches for inbound callbacks from deployed clients. It is where you confirm the tunnel, spot reconnects, and escalate from passive listening to an interactive remote session when a handset checks in.</small></small></p>
+      <p align="center"><img width="280" alt="Listener — waiting for connections" src="https://github.com/user-attachments/assets/aee39d8d-f7a9-40c3-8509-332391f36ed9" /></p>
+    </td>
+    <td align="left" valign="top">
+      <h4 align="left">Remote device — actions</h4>
+      <p align="left"><small><small>Context-aware shortcuts for everything the agent exposes: messaging surfaces, overlays, ringing the device, file tooling, and other modules your build ships. Each tile respects what Android granted—if a permission was denied, the backing action stays unavailable.</small></small></p>
+      <p align="center"><img width="280" alt="Remote device action menu" src="https://github.com/user-attachments/assets/c8b18016-1373-4bc5-881e-b38ee44fa42a" /></p>
+    </td>
+  </tr>
+  <tr>
+    <td align="left" valign="top">
+      <h4 align="left">Installed apps</h4>
+      <p align="left"><small><small>Package inventory with launch metadata, split APK awareness, and quick pivots into deeper tooling. Useful for mapping the attack surface of a supervised handset—spotting OEM bloat, banking apps, or sideloaded bundles you need to document.</small></small></p>
+      <p align="center"><img width="280" alt="Installed apps" src="https://github.com/user-attachments/assets/0bfd6672-5c3b-4576-82ba-09fda78eed52" /></p>
+    </td>
+    <td align="left" valign="top">
+      <h4 align="left">Camera</h4>
+      <p align="left"><small><small>Low-latency preview of the camera stack you are authorized to access—front or rear depending on device policy. Quality tracks bandwidth and HAL quirks, but it is enough for live situational awareness during controlled red-team or MDM exercises.</small></small></p>
+      <p align="center"><img width="280" alt="Live camera stream" src="https://github.com/user-attachments/assets/4ccc4e8b-06fc-438a-b486-b5f4ece4c914" /></p>
+    </td>
+  </tr>
+  <tr>
+    <td align="left" valign="top">
+      <h4 align="left">Microphone</h4>
+      <p align="left"><small><small>Tap the device microphone for streaming audio or buffered captures, gated by runtime mic permission. Pair with camera for fuller environmental context, but only inside scopes where recording is explicitly allowed (corp-owned hardware, consent forms on file, etc.).</small></small></p>
+      <p align="center"><img width="280" alt="Microphone audio stream" src="https://github.com/user-attachments/assets/eca7a3a5-132c-4762-8a99-761a7af98bc5" /></p>
+    </td>
+    <td align="left" valign="top">
+      <h4 align="left">Device info</h4>
+      <p align="left"><small><small>Hardware and telemetry dossier: SoC, RAM tiers, storage health, battery cycles, Wi‑Fi/cellular snapshot, last known geo fix, sensor lineup, and build fingerprints. It is the fastest way to prove device posture during audits without adb shell every time.</small></small></p>
+      <p align="center"><img width="280" alt="Device info — storage, network, location" src="https://github.com/user-attachments/assets/093cb7b3-6141-43f0-aa9e-be4209929616" /></p>
+    </td>
+  </tr>
+  <tr>
+    <td align="left" valign="top" colspan="2">
+      <h4 align="left">File explorer</h4>
+      <p align="left"><small><small>Full remote file browser with multi-select downloads, folder recursion, in-place rename/delete, and uploads from the operator workstation. Paths respect the agent’s sandboxing, but exposed mounts cover typical user media, shared storage, and app-scoped directories you already mirrored.</small></small></p>
+      <table cellpadding="12" cellspacing="0" border="0" align="center" width="100%">
+        <tr>
+          <td align="center" valign="top" width="50%">
+            <p align="center"><img width="280" alt="File explorer — list and operations" src="https://github.com/user-attachments/assets/ed905f4d-0018-468b-892b-defc2bcb80cb" /></p>
+          </td>
+          <td align="center" valign="top" width="50%">
+            <p align="center"><img width="280" alt="File explorer — detail view" src="https://github.com/user-attachments/assets/0c7ffd71-30eb-44aa-ae3e-3de6c45384b7" /></p>
+          </td>
+        </tr>
+      </table>
+    </td>
   </tr>
 </table>
 
