@@ -1,6 +1,6 @@
 <div align="center">
 
-[![MIT License](https://img.shields.io/github/license/anirudhmalik/xhunter.svg?style=flat-square)](https://github.com/anirudhmalik/xhunter/blob/master/LICENSE.md)
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](LICENSE)
 [![v2.0-demo](https://img.shields.io/badge/release-v2.0--demo-blue?style=flat-square)](https://github.com/anirudhmalik/xhunter/releases/tag/v2.0-demo)
 
 <br />
@@ -58,4 +58,4 @@ An **in-app binder** is in active development, built on **[apktool-android](http
 
 ## License
 
-Distributed under the **MIT License**. This repository may not ship a license file; see the [upstream license](https://github.com/anirudhmalik/xhunter/blob/master/LICENSE.md) on **anirudhmalik/xhunter**.
+Distributed under the **MIT License**. See [LICENSE](LICENSE). The main source tree is **[anirudhmalik/xhunter](https://github.com/anirudhmalik/xhunter)**; check that repo for its license if components differ.
