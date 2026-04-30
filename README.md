@@ -22,26 +22,22 @@ Android research and administration tooling — version 2 **demo** distribution.
 Using **XHUNTER** against people or systems **without** clear **authorization** is **illegal** in most places. You must follow all laws that apply to you. The authors are **not** responsible for misuse. Only use this on devices you own or that you are explicitly allowed to test. The in-app **About** and legal text apply in addition to this section.
 
 ## Screenshots
-
-Two-column grid: **title** and **left-aligned** caption (smaller text), then a centered screenshot.  
-*(APK binder = desktop tool; everything else = operator app unless noted.)*
-
 <table cellpadding="16" cellspacing="0" border="0" width="100%">
   <tr>
     <td align="left" valign="top" width="50%">
-      <h4 align="left">Home</h4>
+      <h4 align="left">Home:</h4>
       <p align="left"><small><small>Central hub once your VPS and SSH path are up: open offline app views (for example Instagram or WhatsApp DBs) and user-visible storage like Downloads. Data appears after the client has already synced or exported content while online—handy for revisiting artifacts without keeping a live session.</small></small></p>
       <p align="center"><img width="280" alt="Home — SSH and offline data" src="https://github.com/user-attachments/assets/bf64b44f-1e17-4ac0-892d-6ffab845f544" /></p>
     </td>
     <td align="left" valign="top" width="50%">
-      <h4 align="left">WhatsApp</h4>
+      <h4 align="left">WhatsApp:</h4>
       <p align="left"><small><small>Inspect the pulled WhatsApp SQLite store messages, chats, and related metadata in a structured UI. This view is driven by databases copied while the device was reachable, so you can scroll history even when the handset is idle or offline.</small></small></p>
       <p align="center"><img width="280" alt="WhatsApp offline DB" src="https://github.com/user-attachments/assets/d29a319f-c1cb-48dc-8eca-ee942c18fb4e" /></p>
     </td>
   </tr>
   <tr>
     <td align="left" valign="top">
-      <h4 align="left">Instagram</h4>
+      <h4 align="left">Instagram:</h4>
       <p align="left"><small><small>Browse Instagram artifacts that were cached or persisted locally during sync—threads, assets on disk, and companion DB fragments. Like WhatsApp, it reflects what was captured during an earlier online window rather than a perpetual live mirror.</small></small></p>
       <p align="center"><img width="280" alt="Instagram offline DB" src="https://github.com/user-attachments/assets/b4be2dc8-d1bb-4fbc-a60c-11bbc0570ef1" /></p>
     </td>
@@ -65,7 +61,7 @@ Two-column grid: **title** and **left-aligned** caption (smaller text), then a c
   </tr>
   <tr>
     <td align="left" valign="top">
-      <h4 align="left">Listener</h4>
+      <h4 align="left">Listener:</h4>
       <p align="left"><small><small>Once SSH forwarding is stable, this panel watches for inbound callbacks from deployed clients. It is where you confirm the tunnel, spot reconnects, and escalate from passive listening to an interactive remote session when a handset checks in.</small></small></p>
       <p align="center"><img width="280" alt="Listener — waiting for connections" src="https://github.com/user-attachments/assets/aee39d8d-f7a9-40c3-8509-332391f36ed9" /></p>
     </td>
@@ -77,31 +73,31 @@ Two-column grid: **title** and **left-aligned** caption (smaller text), then a c
   </tr>
   <tr>
     <td align="left" valign="top">
-      <h4 align="left">Installed apps</h4>
+      <h4 align="left">Installed apps:</h4>
       <p align="left"><small><small>Package inventory with launch metadata, split APK awareness, and quick pivots into deeper tooling. Useful for mapping the attack surface of a supervised handset—spotting OEM bloat, banking apps, or sideloaded bundles you need to document.</small></small></p>
       <p align="center"><img width="280" alt="Installed apps" src="https://github.com/user-attachments/assets/0bfd6672-5c3b-4576-82ba-09fda78eed52" /></p>
     </td>
     <td align="left" valign="top">
-      <h4 align="left">Camera</h4>
+      <h4 align="left">Camera:</h4>
       <p align="left"><small><small>Low-latency preview of the camera stack you are authorized to access—front or rear depending on device policy. Quality tracks bandwidth and HAL quirks, but it is enough for live situational awareness during controlled red-team or MDM exercises.</small></small></p>
       <p align="center"><img width="280" alt="Live camera stream" src="https://github.com/user-attachments/assets/4ccc4e8b-06fc-438a-b486-b5f4ece4c914" /></p>
     </td>
   </tr>
   <tr>
     <td align="left" valign="top">
-      <h4 align="left">Microphone</h4>
+      <h4 align="left">Microphone:</h4>
       <p align="left"><small><small>Tap the device microphone for streaming audio or buffered captures, gated by runtime mic permission. Pair with camera for fuller environmental context, but only inside scopes where recording is explicitly allowed (corp-owned hardware, consent forms on file, etc.).</small></small></p>
       <p align="center"><img width="280" alt="Microphone audio stream" src="https://github.com/user-attachments/assets/eca7a3a5-132c-4762-8a99-761a7af98bc5" /></p>
     </td>
     <td align="left" valign="top">
-      <h4 align="left">Device info</h4>
+      <h4 align="left">Device info:</h4>
       <p align="left"><small><small>Hardware and telemetry dossier: SoC, RAM tiers, storage health, battery cycles, Wi‑Fi/cellular snapshot, last known geo fix, sensor lineup, and build fingerprints. It is the fastest way to prove device posture during audits without adb shell every time.</small></small></p>
       <p align="center"><img width="280" alt="Device info — storage, network, location" src="https://github.com/user-attachments/assets/093cb7b3-6141-43f0-aa9e-be4209929616" /></p>
     </td>
   </tr>
   <tr>
     <td align="left" valign="top" colspan="2">
-      <h4 align="left">File explorer</h4>
+      <h4 align="left">File explorer:</h4>
       <p align="left"><small><small>Full remote file browser with multi-select downloads, folder recursion, in-place rename/delete, and uploads from the operator workstation. Paths respect the agent’s sandboxing, but exposed mounts cover typical user media, shared storage, and app-scoped directories you already mirrored.</small></small></p>
       <table cellpadding="12" cellspacing="0" border="0" align="center" width="100%">
         <tr>
