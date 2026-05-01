@@ -12,16 +12,12 @@
 
 # XHUNTER
 
-<img src="https://readme-typing-svg.demolab.com/?font=Fira+Code&size=18&pause=950&color=39FF14&center=true&vCenter=true&multiline=true&width=760&height=80&repeat=true&lines=Authorized+Android+research+%26+pentest+lab+R%26D;Reverse+SSH+tunnels+%E2%80%A2+offline+forensics;On-device+APK+bind+%E2%80%A2+Nmap+network+recon" alt="Animated tagline: authorized Android research, tunnels, APK bind, Nmap" />
+<img src="https://readme-typing-svg.demolab.com/?font=Fira+Code&size=16&pause=950&color=166534&center=true&vCenter=true&multiline=true&width=780&height=96&repeat=true&lines=Disclaimer:+Use+only+with+clear+authorization+in+permitted+environments.;Unauthorized+use+may+be+unlawful.+Authors+accept+no+liability+for+misuse.;Follow+applicable+laws+and+in-app+legal+terms." alt="Typing disclaimer: authorized use only, no liability, follow laws and in-app terms" />
 
-**v2.0 — on-device APK binder · optional desktop `binder/` · Nmap scans (authorized labs only)**
 
 [Milestone **v2.0**](https://github.com/anirudhmalik/xhunter/releases/tag/v2.0) · [Download APK](https://github.com/anirudhmalik/xhunter/releases/download/v2.0/xhunter_v2.0.apk) · **[Full setup → USAGE.md](USAGE.md)** · [Issues](https://github.com/anirudhmalik/xhunter/issues)
 
 </div>
-
-**Legal:** use **only** where you have **clear authorization**; otherwise illegal in most jurisdictions. Authors are **not** liable for misuse. In-app legal text applies too.
-
 ---
 
 ## Screenshots
@@ -30,37 +26,35 @@ In-app binder and modules on the operator handset · desktop merge alternative: 
 
 <table cellpadding="16" cellspacing="0" border="0" width="100%">
   <tr>
-    <td align="left" valign="top" width="50%">
+    <td align="left" valign="top" width="33%">
       <h4 align="left">Home</h4>
       <p align="center"><img width="280" alt="XHunter home dashboard with SSH and offline data shortcuts" src="https://github.com/user-attachments/assets/bf64b44f-1e17-4ac0-892d-6ffab845f544" /></p>
     </td>
-    <td align="left" valign="top" width="50%">
+    <td align="left" valign="top" width="33%">
       <h4 align="left">WhatsApp</h4>
       <p align="center"><img width="280" alt="WhatsApp SQLite archive rendered inside xhunter offline mode" src="https://github.com/user-attachments/assets/d29a319f-c1cb-48dc-8eca-ee942c18fb4e" /></p>
     </td>
-  </tr>
-  <tr>
-    <td align="left" valign="top">
+    <td align="left" valign="top" width="34%">
       <h4 align="left">Instagram</h4>
       <p align="center"><img width="280" alt="Instagram offline artefacts browser in xhunter" src="https://github.com/user-attachments/assets/b4be2dc8-d1bb-4fbc-a60c-11bbc0570ef1" /></p>
     </td>
-    <td align="left" valign="top">
+  </tr>
+  <tr>
+    <td align="left" valign="top" width="33%">
       <h4 align="left">APK binder — config</h4>
       <p align="center"><img width="280" alt="In-app binder configuration screen for callback host" src="https://github.com/user-attachments/assets/9688c876-4696-47f1-a2cc-aec55b9d67e9" /></p>
     </td>
-  </tr>
-  <tr>
-    <td align="left" valign="top">
+    <td align="left" valign="top" width="33%">
       <h4 align="left">APK binder — logs</h4>
       <p align="center"><img width="280" alt="Binder job log output on Android showing apktool stages" src="https://github.com/user-attachments/assets/82ca36b4-7eaa-4988-8168-5459c6e36ff8" /></p>
     </td>
-    <td align="left" valign="top">
+    <td align="left" valign="top" width="34%">
       <h4 align="left">APK binder — activity hook</h4>
       <p align="center"><img width="280" alt="Binder wizard choosing host activity for payload hook" src="https://github.com/user-attachments/assets/492a82ef-0532-447a-82af-ac6f63c39ab5" /></p>
     </td>
   </tr>
   <tr>
-    <td align="left" valign="top" colspan="2">
+    <td align="left" valign="top" colspan="3">
       <h4 align="left">Network scanner — embedded Nmap</h4>
       <p align="center"><small>Drop a GIF or still here alongside <a href="https://github.com/anirudhmalik/xhunter/releases/tag/v2.0">v2.0 release assets</a> when ready.</small></p>
 <pre align="center">
@@ -71,37 +65,35 @@ In-app binder and modules on the operator handset · desktop merge alternative: 
     </td>
   </tr>
   <tr>
-    <td align="left" valign="top">
+    <td align="left" valign="top" width="33%">
       <h4 align="left">Listener</h4>
       <p align="center"><img width="280" alt="XHunter listener panel awaiting enrolled devices" src="https://github.com/user-attachments/assets/aee39d8d-f7a9-40c3-8509-332391f36ed9" /></p>
     </td>
-    <td align="left" valign="top">
+    <td align="left" valign="top" width="33%">
       <h4 align="left">Remote device · actions</h4>
       <p align="center"><img width="280" alt="Remote device contextual action sheet in xhunter" src="https://github.com/user-attachments/assets/c8b18016-1373-4bc5-881e-b38ee44fa42a" /></p>
     </td>
-  </tr>
-  <tr>
-    <td align="left" valign="top">
+    <td align="left" valign="top" width="34%">
       <h4 align="left">Installed apps</h4>
       <p align="center"><img width="280" alt="Installed packages inventory inside xhunter" src="https://github.com/user-attachments/assets/0bfd6672-5c3b-4576-82ba-09fda78eed52" /></p>
     </td>
-    <td align="left" valign="top">
+  </tr>
+  <tr>
+    <td align="left" valign="top" width="33%">
       <h4 align="left">Camera</h4>
       <p align="center"><img width="280" alt="Authorized live camera streaming tile" src="https://github.com/user-attachments/assets/4ccc4e8b-06fc-438a-b486-b5f4ece4c914" /></p>
     </td>
-  </tr>
-  <tr>
-    <td align="left" valign="top">
+    <td align="left" valign="top" width="33%">
       <h4 align="left">Microphone</h4>
       <p align="center"><img width="280" alt="Microphone capture module in xhunter demo" src="https://github.com/user-attachments/assets/eca7a3a5-132c-4762-8a99-761a7af98bc5" /></p>
     </td>
-    <td align="left" valign="top">
+    <td align="left" valign="top" width="34%">
       <h4 align="left">Device info</h4>
       <p align="center"><img width="280" alt="Telemetry heavy device posture panel" src="https://github.com/user-attachments/assets/093cb7b3-6141-43f0-aa9e-be4209929616" /></p>
     </td>
   </tr>
   <tr>
-    <td align="left" valign="top" colspan="2">
+    <td align="left" valign="top" colspan="3">
       <h4 align="left">File explorer</h4>
       <table cellpadding="12" cellspacing="0" border="0" align="center" width="100%">
         <tr>
