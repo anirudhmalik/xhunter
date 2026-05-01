@@ -30,18 +30,22 @@ echo ""
 
 command -v java >/dev/null 2>&1 || err "java not on PATH. Install a JDK (17+ recommended; see README)."
 
-_jv="$(java -version 2>&1 | head -1)"
-info "${_B}java${_R} ${_D}${_jv}${_R}"
-unset _jv
+if ! _java_version_out="$(java -version 2>&1)"; then
+  err "java is on PATH but a runtime is not available. Install a JDK (17+ recommended; see README). Output: ${_java_version_out}"
+fi
+IFS=$'\n' read -r _java_version_first_line _rest <<<"$_java_version_out"
+unset _rest
+info "${_B}java${_R} ${_D}${_java_version_first_line}${_R}"
 
 # Prefer JDK 17+ (picocli + binder-cli); 11+ often works; warn if very old
-if ! java -version 2>&1 | grep -qE 'version "1[7-9]\.|version "[2-9][0-9]'; then
-  if ! java -version 2>&1 | grep -qE 'version "1[1-6]\.'; then
+if [[ ! "$_java_version_first_line" =~ version\ \"1[7-9]\.|version\ \"[2-9][0-9] ]]; then
+  if [[ ! "$_java_version_first_line" =~ version\ \"1[1-6]\. ]]; then
     :
   else
     _xh_warn "JDK 11–16; xhunter monorepo docs recommend 17+."
   fi
 fi
+unset _java_version_out _java_version_first_line
 
 [[ -f lib/binder-cli.jar ]] || err "Missing lib/binder-cli.jar in $SCRIPT_DIR (build with xhunter: ./gradlew :binder-cli:fatJar and copy the jar to lib/ here)."
 
