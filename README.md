@@ -18,7 +18,6 @@
 [Milestone **v2.0**](https://github.com/anirudhmalik/xhunter/releases/tag/v2.0) · [Download APK](https://github.com/anirudhmalik/xhunter/releases/download/v2.0/xhunter_v2.0.apk) · **[Full setup → USAGE.md](USAGE.md)** · [Issues](https://github.com/anirudhmalik/xhunter/issues)
 
 </div>
----
 
 ## Screenshots
 
